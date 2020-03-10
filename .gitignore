@@ -1,0 +1,8 @@
+*cache*
+*.pyc
+.tox*
+.vscode
+*build*
+*egg*
+# *.ipynb
+*.tif
