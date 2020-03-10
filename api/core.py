@@ -10,4 +10,5 @@ class Well:
         self.array = array
         self.ndim = array.ndim
         self.shape = array.shape
+        self.meta = meta
 
