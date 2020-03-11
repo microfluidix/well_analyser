@@ -68,7 +68,7 @@ def findWell(imgToAnalyze:np.ndarray,
 
     assert len(imgToAnalyze.shape) == 2
 
-    (xc, yc) = utilities._getCenter(imgToAnalyze,maskSizeUm,wellDiameterUm,muToPx)
+    (xc, yc) = utilities._get_center(imgToAnalyze,maskSizeUm,wellDiameterUm,muToPx)
 
     cropDist = maskSizeUm*muToPx
 
