@@ -114,7 +114,7 @@ def findSpheroid(imCropped:np.ndarray,
 
     imThresh = toThresh > np.max(toThresh)/fraction
 
-    cnts, h = cv2.findContours(imThresh.astype('uint8'), 
+    cnts, _ = cv2.findContours(imThresh.astype('uint8'), 
         cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     temp = cv2.drawContours(imThresh.astype('uint8'), 
         cnts, -1, (255,255,255), thickness=cv2.FILLED)
