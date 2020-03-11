@@ -4,7 +4,6 @@ import numpy as np
 
 import pims
 from scipy.ndimage import gaussian_filter
-import matplotlib.pyplot as plt
 import cv2
 from numpy import unravel_index
 from scipy import ndimage, misc
@@ -16,7 +15,7 @@ def well(imgToAnalyze:np.ndarray,
     maskSizeUm:int,
     wellDiameterUm:int,
     muToPx:float):
-    
+
     """
     
     From 2D BF image finds and crops around well position.
@@ -69,7 +68,7 @@ def findWell(imgToAnalyze:np.ndarray,
 
     assert len(imgToAnalyze.shape) == 2
 
-    (xc, yc) = utilities._getCenter(imgToAnalyze,maskSizeUm,wellDiameterUm,muToPx)
+    (xc, yc) = utilities._get_center(imgToAnalyze,maskSizeUm,wellDiameterUm,muToPx)
 
     cropDist = maskSizeUm*muToPx
 
@@ -94,7 +93,10 @@ def findSpheroid(imCropped:np.ndarray,
 
     We find the spheroid by thresholding the intensity
     and area filling. Sph. must have a dark border around
-    it.
+    it. 
+    
+    Returns:
+     - labeled array.
 
     """
 
@@ -102,7 +104,7 @@ def findSpheroid(imCropped:np.ndarray,
     result1 = ndimage.sobel(imCropped, 1)
     result2 = ndimage.sobel(imCropped, 0)
 
-    mask = utilities._makeDiskMask(wellDiameterUm, wellDiameterUm-marginDistance-20,
+    mask = utilities._make_disk_mask(wellDiameterUm, wellDiameterUm-marginDistance-20,
         umToPx)
 
     a, b = np.shape(result1)
