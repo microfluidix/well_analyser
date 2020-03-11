@@ -2,7 +2,11 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-def verifySegmentationBF(BFimage, rRegion, PATH, experiment, time):
+def verifySegmentationBF(BFimage:np.ndarray, 
+    rRegion:np.ndarray, 
+    PATH:str, 
+    experiment:str, 
+    time:str):
 
     if not os.path.exists(os.path.join(PATH, experiment, 'Spheroid Region Detection')):
         os.makedirs(os.path.join(PATH, experiment, 'Spheroid Region Detection'))
