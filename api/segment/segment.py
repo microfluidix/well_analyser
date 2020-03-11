@@ -85,7 +85,7 @@ def findSpheroid(imCropped:np.ndarray,
     wellDiameterUm:int,
     marginDistance:int, 
     umToPx:float,  
-    fraction = 5,
+    fraction = 3,
     minRegionArea = 15000, 
     maxRegionArea = 120000):
 
@@ -109,7 +109,7 @@ def findSpheroid(imCropped:np.ndarray,
 
     a, b = np.shape(result1)
 
-    sobelMasked = np.multiply(mask[:a, :b], np.sqrt(result1**2+result2**2))
+    sobelMasked = np.multiply(mask, np.sqrt(result1**2+result2**2))
     toThresh = gaussian_filter(sobelMasked, sigma=5)
 
     imThresh = toThresh > np.max(toThresh)/fraction
@@ -141,4 +141,4 @@ def findSpheroid(imCropped:np.ndarray,
             temp[imLabel == region.label] = 0
             #region given same value as sph. border
 
-    return temp
+    return imLabel
