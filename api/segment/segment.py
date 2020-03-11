@@ -10,13 +10,32 @@ from numpy import unravel_index
 from scipy import ndimage, misc
 from skimage.measure import label, regionprops
 
+import api.segment.utilities as utilities
+
+def well(imgToAnalyze:np.ndarray,
+    maskSizeUm:int,
+    wellDiameterUm:int,
+    muToPx:float):
+    
+    """
+    
+    From 2D BF image finds and crops around well position.
+
+    Returns:
+     - np.ndarray
+    
+    """
+
+    boolMask = findWell(imgToAnalyze,
+        maskSizeUm,
+        wellDiameterUm,
+        muToPx)
+
+    return crop(imgToAnalyze, boolMask)
 
 
 def crop(imgToCrop:np.ndarray,
-    imgToAnalyze:np.ndarray,
-    maskSize:int,
-    wellSize:int,
-    muToPx:float):
+    boolMask:np.ndarray):
 
     """
 
@@ -28,57 +47,48 @@ def crop(imgToCrop:np.ndarray,
 
     """
 
-    assert len(imgToCrop.shape) == 2
+    assert imgToCrop.shape == boolMask.shape
 
-    (xc, yc) = _getCenter(imgToAnalyze,maskSize,wellSize,muToPx)
+    coords = np.argwhere(boolMask)
+    x_min, y_min = coords.min(axis=0)
+    x_max, y_max = coords.max(axis=0)
 
-    cropDist = maskSize*muToPx
+    return np.multiply(imgToCrop, boolMask.astype(int))[x_min:x_max+1, y_min:y_max+1]
+
+def findWell(imgToAnalyze:np.ndarray,
+    maskSizeUm:int,
+    wellDiameterUm:int,
+    muToPx:float):
+
+    """
+    
+    Returns a np.ndarray(bool) where the well area is delimited by True
+    values. 
+    
+    """
+
+    assert len(imgToAnalyze.shape) == 2
+
+    (xc, yc) = utilities._getCenter(imgToAnalyze,maskSizeUm,wellDiameterUm,muToPx)
+
+    cropDist = maskSizeUm*muToPx
 
     startx = max(xc-(cropDist//2), 0)
     starty = max(yc-(cropDist//2), 0)
 
-    return imgToCrop[int(startx):int(startx+cropDist),int(starty):int(starty+cropDist)]
+    boolArray = np.zeros_like(imgToAnalyze, dtype=bool)
+    boolArray[int(startx):int(startx+cropDist),int(starty):int(starty+cropDist)] = True
+
+    return boolArray
 
 
-from api import core
-
-core.
-
-def _getSphCoords(PATH:str, experiment:str, time:str, CHANNEL:str,
-    wellDiameter:int, marginDistance:int, umToPx:float):
-
-    """
-    CORE FUNCTION:
-
-    Function to retrieve the spheroid coordinates from the BF images. Relies
-    upon ID by max gradient values.
-
-    Returns:
-    - tuple_of_arrays
-
-    """
-
-    img = pims.ImageSequence(os.path.join(PATH, experiment, CHANNEL, '*.tif'),
-        as_grey=True)
-    imToCrop = img[int(time)]
-
-
-    BFimage = cropper._centerSelect(imToCrop, wellDiameter,
-        marginDistance, umToPx)
-    rRegion = _findSpheroid(BFimage, wellDiameter, umToPx, marginDistance)
-
-
-    # Image the segmentation to keep intermediary result of the segmentation.
-    _verifySegmentationBF(BFimage, rRegion, PATH, experiment, time)
-
-    return np.nonzero(rRegion)
-
-
-##### Local utility functions #####
-
-
-def _findSpheroid(imCropped, wellDiameter, umToPx, marginDistance, fraction = 5,
-                  minRegionArea = 15000, maxRegionArea = 120000):
+def findSpheroid(imCropped:np.ndarray, 
+    wellDiameterUm:int,
+    marginDistance:int, 
+    umToPx:float,  
+    fraction = 5,
+    minRegionArea = 15000, 
+    maxRegionArea = 120000):
 
     """
 
@@ -92,7 +102,7 @@ def _findSpheroid(imCropped, wellDiameter, umToPx, marginDistance, fraction = 5,
     result1 = ndimage.sobel(imCropped, 1)
     result2 = ndimage.sobel(imCropped, 0)
 
-    mask = cropper._makeDiskMask(wellDiameter, wellDiameter-marginDistance-20,
+    mask = utilities._makeDiskMask(wellDiameterUm, wellDiameterUm-marginDistance-20,
         umToPx)
 
     a, b = np.shape(result1)
@@ -102,8 +112,10 @@ def _findSpheroid(imCropped, wellDiameter, umToPx, marginDistance, fraction = 5,
 
     imThresh = toThresh > np.max(toThresh)/fraction
 
-    cnts, h = cv2.findContours(imThresh.astype('uint8'), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-    temp = cv2.drawContours(imThresh.astype('uint8'), cnts, -1, (255,255,255), thickness=cv2.FILLED)
+    cnts, h = cv2.findContours(imThresh.astype('uint8'), 
+        cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    temp = cv2.drawContours(imThresh.astype('uint8'), 
+        cnts, -1, (255,255,255), thickness=cv2.FILLED)
 
     imLabel = label(temp)
 
@@ -128,18 +140,3 @@ def _findSpheroid(imCropped, wellDiameter, umToPx, marginDistance, fraction = 5,
             #region given same value as sph. border
 
     return temp
-
-def _verifySegmentationBF(BFimage, rRegion, PATH, experiment, time):
-
-    if not os.path.exists(os.path.join(PATH, experiment, 'Spheroid Region Detection')):
-        os.makedirs(os.path.join(PATH, experiment, 'Spheroid Region Detection'))
-    savePath = os.path.join(PATH, experiment, 'Spheroid Region Detection')
-
-    fig, ax = plt.subplots(1,1, figsize = (10,10))
-
-    plt.imshow(BFimage, cmap='gray', origin = 'lower')
-    plt.imshow(rRegion, alpha = 0.1, origin = 'lower')
-    plt.savefig(os.path.join(savePath, 'testFrame_%frame.jpeg' %round(int(time,0))))
-    plt.close(fig)
-
-    return

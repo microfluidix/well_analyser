@@ -93,7 +93,7 @@ def _makeDiskMask(maskSize:int, diskSize:int, umToPx:float):
 
     """
 
-    cropDist = maskSize*umToPx
+    cropDist = int(maskSize*umToPx)
 
     X = np.arange(cropDist)
     Y = X
@@ -102,3 +102,32 @@ def _makeDiskMask(maskSize:int, diskSize:int, umToPx:float):
     mask = (np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) < (diskSize*umToPx)//2)
 
     return mask.astype(np.int)
+
+def _getSphCoords(PATH:str, experiment:str, time:str, CHANNEL:str,
+    wellDiameter:int, marginDistance:int, umToPx:float):
+
+    """
+    CORE FUNCTION:
+
+    Function to retrieve the spheroid coordinates from the BF images. Relies
+    upon ID by max gradient values.
+
+    Returns:
+    - tuple_of_arrays
+
+    """
+
+    img = pims.ImageSequence(os.path.join(PATH, experiment, CHANNEL, '*.tif'),
+        as_grey=True)
+    imToCrop = img[int(time)]
+
+
+    BFimage = cropper._centerSelect(imToCrop, wellDiameter,
+        marginDistance, umToPx)
+    rRegion = _findSpheroid(BFimage, wellDiameter, umToPx, marginDistance)
+
+
+    # Image the segmentation to keep intermediary result of the segmentation.
+    _verifySegmentationBF(BFimage, rRegion, PATH, experiment, time)
+
+    return np.nonzero(rRegion)
