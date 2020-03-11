@@ -12,11 +12,11 @@ def verifySegmentationBF(BFimage:np.ndarray,
         os.makedirs(os.path.join(PATH, experiment, 'Spheroid Region Detection'))
     savePath = os.path.join(PATH, experiment, 'Spheroid Region Detection')
 
-    fig, ax = plt.subplots(1,1, figsize = (10,10))
+    fig, _ = plt.subplots(1,1, figsize = (10,10))
 
     plt.imshow(BFimage, cmap='gray', origin = 'lower')
     plt.imshow(rRegion, alpha = 0.1, origin = 'lower')
-    plt.savefig(os.path.join(savePath, 'testFrame_%time.jpeg' %round(int(time,0))))
+    plt.savefig(os.path.join(savePath, 'test_frame_%time.jpeg' %round(int(time,0))))
     plt.close(fig)
 
     return
