@@ -11,15 +11,15 @@ class VirtualStack:
 
     '''Handle tif exports from NIS'''
     
-    def __init__(self, folder:str, search_names:str='*.tif', regex:str=r't(\d{2})z(\d)c(\d)'):
+    def __init__(self, folder:str, search_names:str='*.tif', regex:str=r'([ctmz])(\d{1,2})'):
         self.folder = folder
         self.flist = glob(os.path.join(folder, search_names))
         assert len(self.flist) > 0, 'No files found'
         self.indices = list(map(get_indices, self.flist))
         self.ranges = get_sizes(self.indices)
+        self.order = ''.join(self.indices[0].keys())
 
-     
-    def read(self, t=(None, None), z=(None, None), c=(None,None), bin=0):
+    def read(self, bin=0, **kwargs):
         '''
         Get generator with a selected sequence
 
@@ -37,8 +37,8 @@ class VirtualStack:
         ValueError if coordiantes are out of range
         '''
         ranges = []
-        for ax, values in zip('tzc', (t, z, c)):
-            _range = self.check_range(values, ax)
+        for ax, values in kwargs:
+            _range = self._check_range(values, ax)
             ranges.append(_range)
         for _t in ranges[0]:
             for _z in ranges[1]:
@@ -48,14 +48,16 @@ class VirtualStack:
                         img = img.bin(bin)
                     yield img
       
-    def get_single_image(self, t:int, z:int, c:int) -> Well:
+    def get_single_image(self, **kwargs) -> Well:
         '''reads .tif from disk, returns api.core.Well instance'''
-        t, z, c = [self.check_range(v, ax)[0] for v, ax in zip((t,z,c), 'tzc')]
-        fname = get_fname({'t': t, 'z': z, 'c': c})
+        args = {ax: self._check_range(v, ax) for ax, v in kwargs.items()}
+        fname = get_fname(args)
         path = os.path.join(self.folder, fname)
-        return Well(imread(path),  meta={'t': t, 'z': z, 'c': c, 'path': fname, 'prefix': self.folder})
+        if not os.path.exists(path):
+            raise ValueError(f'File not found for coordinates {args}')
+        return Well(imread(path),  meta={**args, 'path': fname, 'prefix': self.folder})
     
-    def check_range(self, values:tuple, axis:str):
+    def _check_range(self, values:tuple, axis:str):
         '''
         Check range values and generate range
         
@@ -72,8 +74,9 @@ class VirtualStack:
             
         if values is None:
             return range(single_check(None, upper=False), single_check(None, upper=True) + 1) 
+
         elif isinstance(values, int):
-            return (single_check(values),)
+            return single_check(values)
         
         elif isinstance(values, tuple):
             assert len(values) == 2
@@ -85,12 +88,14 @@ class VirtualStack:
         return f'Virtial Stack instance. \nFound {len(self.flist)} files in {self.folder}. Ranges: {self.ranges}'
    
 
-def get_indices(fname:str, regexp=r't(\d{2})z(\d)c(\d)', order='tzc'):
+def get_indices(fname:str, regexp=r'([ctmz])(\d{1,2})') -> dict:
+    '''
+    scans file name for regex and returns dict of values
+    '''
     r = re.compile(regexp)
-    finds = r.findall(fname)
-    assert len(finds) == 1
-    assert len(finds[0]) == 3
-    indices = {k: int(v) for k, v in zip(order, finds[0])}
+    res = r.findall(fname)
+    assert len(res) > 0, 'Nothing found'
+    indices = {k: int(v) for k, v in res}
     return indices
 
 
