@@ -15,9 +15,9 @@ class VirtualStack:
         self.folder = folder
         self.flist = glob(os.path.join(folder, search_names))
         assert len(self.flist) > 0, 'No files found'
-        self.indices = list(map(get_indices, self.flist))
-        self.ranges = get_sizes(self.indices)
+        self.indices = list(map(lambda p: get_indices(p, regex), self.flist))
         self.order = ''.join(self.indices[0].keys())
+        self.ranges = get_sizes(self.indices, self.order)
 
     def read(self, bin=0, **kwargs):
         '''
@@ -37,24 +37,35 @@ class VirtualStack:
         ValueError if coordiantes are out of range
         '''
         ranges = []
-        for ax, values in kwargs:
-            _range = self._check_range(values, ax)
-            ranges.append(_range)
-        for _t in ranges[0]:
-            for _z in ranges[1]:
-                for _c in ranges[2]:
-                    img =  self.get_single_image(_t, _z, _c)
-                    if bin > 1:
-                        img = img.bin(bin)
-                    yield img
+        for ax in self.order:
+            if ax in kwargs:
+                _range = kwargs[ax]
+            else:
+                _range = None
+            ranges.append(self._check_range(_range, ax))
+        # print(ranges)
+
+        params=[{}]
+        for ax, _range in zip(self.order[-1::-1], ranges[-1::-1]):
+            params = [{**p, ax: r} for r in _range for p in params]
+        # print(params)
+        for param in params:
+            img =  self.get_single_image(**param)
+            if bin > 1:
+                img = img.bin(bin)
+            yield img
       
     def get_single_image(self, **kwargs) -> Well:
         '''reads .tif from disk, returns api.core.Well instance'''
-        args = {ax: self._check_range(v, ax) for ax, v in kwargs.items()}
-        fname = get_fname(args)
-        path = os.path.join(self.folder, fname)
+        args = {ax: self._check_range(v, ax)[0] for ax, v in kwargs.items()}
+        try:
+            index = self.indices.index(args)
+        except ValueError:
+            raise ValueError(f'Can\'t find data for coordinates {args}')
+        path = self.flist[index]
         if not os.path.exists(path):
             raise ValueError(f'File not found for coordinates {args}')
+        fname = os.path.basename(path)
         return Well(imread(path),  meta={**args, 'path': fname, 'prefix': self.folder})
     
     def _check_range(self, values:tuple, axis:str):
@@ -76,7 +87,7 @@ class VirtualStack:
             return range(single_check(None, upper=False), single_check(None, upper=True) + 1) 
 
         elif isinstance(values, int):
-            return single_check(values)
+            return (single_check(values),)
         
         elif isinstance(values, tuple):
             assert len(values) == 2
@@ -94,26 +105,16 @@ def get_indices(fname:str, regexp=r'([ctmz])(\d{1,2})') -> dict:
     '''
     r = re.compile(regexp)
     res = r.findall(fname)
-    assert len(res) > 0, 'Nothing found'
+    assert len(res) > 0, f'Nothing found in {fname} using regexp {regexp}'
     indices = {k: int(v) for k, v in res}
     return indices
-
-
-def get_fname(indices:dict, order='tzc'):
-    '''
-    Returns filename.tif in format `t00z0c0.tif`
-    '''
-    assert ''.join(indices.keys()) == order
-    t, z, c = indices.values()
-#     print(t,z,c)
-    return f't{t:02d}z{z}c{c}.tif'
 
 
 def get_sizes(indices:dict, order='tzc'):
     '''
     Returns min-max values for each dimension in the dict
     '''
-    tzc = np.array([[d['t'], d['z'], d['c']] for d in indices], dtype='uint8')
+    tzc = np.array([[d[ax] for ax in order] for d in indices], dtype='uint8')
     _max = tzc.max(axis=0)
     _min = tzc.min(axis=0)
     ranges = {o: {'min': low, 'max': high} for o, low, high in zip(order, _min, _max)}
