@@ -173,11 +173,6 @@ w
 ```
 
     Showing first layer
-    
-
-
-
-
     array (32, 711, 1060), {'binning': {10}, 'c': {3}, 'z': {5}, 't': {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33}, 'path': {'t14z5c3.tif', 't30z5c3.tif', 't18z5c3.tif', 't13z5c3.tif', 't02z5c3.tif', 't19z5c3.tif', 't29z5c3.tif', 't25z5c3.tif', 't33z5c3.tif', 't03z5c3.tif', 't32z5c3.tif', 't10z5c3.tif', 't31z5c3.tif', 't15z5c3.tif', 't27z5c3.tif', 't11z5c3.tif', 't17z5c3.tif', 't20z5c3.tif', 't06z5c3.tif', 't16z5c3.tif', 't05z5c3.tif', 't12z5c3.tif', 't04z5c3.tif', 't23z5c3.tif', 't24z5c3.tif', 't08z5c3.tif', 't22z5c3.tif', 't26z5c3.tif', 't07z5c3.tif', 't28z5c3.tif', 't21z5c3.tif', 't09z5c3.tif'}, 'prefix': {'Z:/Andrey/data/Salome/20200228/NIS_export/'}, 'stacked': 32}
 
 
@@ -186,10 +181,6 @@ w
 ![png](img/output_12_2.png)
 
 
-
-```python
-
-```
 
 
 
