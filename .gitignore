@@ -8,3 +8,4 @@
 *.tif
 .DS_Store
 venv
+*.tiff
