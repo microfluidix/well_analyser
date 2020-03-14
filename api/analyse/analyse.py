@@ -1,13 +1,12 @@
 import os
 import sys
 import numpy as np
+import pandas
 
-from numpy import unravel_index
-from scipy import ndimage, misc
-from skimage.measure import label, regionprops
+from skimage.measure import label, regionprops_table
 
 def spheroid_properties(img_labeled,
-    img_intensity = None):
+    img_intensity):
 
     """
 
@@ -15,28 +14,18 @@ def spheroid_properties(img_labeled,
     non-empty, then we can extract the average intensity.
     
     Returns:
-     - dict
+     - pandas DataFrame
 
     """
 
-    spheroid_props = {}
+    properties = ['label', 
+        'area', 
+        'perimeter',
+        'eccentricity',
+        'orientation',
+        'major_axis_length',
+        'mean_intensity']
 
     im_label = label(img_labeled)
 
-    for region in regionprops(im_label):
-
-        dic = {}
-
-        dic['ecc'] = region.eccentricity
-        dic['perimenter'] = region.perimeter
-        dic['area'] = region.area
-        dic['orientation'] = region.orientation
-        dic['major_axis_length'] = region.major_axis_length
-        dic['minor_axis_length'] = region.minor_axis_length
-
-        if img_intensity != None:
-            dic['intensity'] = region.mean_intensity
-
-        spheroid_props[region.label] = dic
-
-    return spheroid_props
+    return pandas.DataFrame(regionprops_table(im_label, img_intensity, properties))
