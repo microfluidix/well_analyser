@@ -11,7 +11,7 @@ from skimage.measure import label, regionprops
 
 import api.segment.utilities as utilities
 
-def well(imgToAnalyze:np.ndarray,
+def select_well(imgToAnalyze:np.ndarray,
     maskSizeUm:int,
     wellDiameterUm:int,
     muToPx:float):
@@ -54,7 +54,7 @@ def crop(imgToCrop:np.ndarray,
 
     return np.multiply(imgToCrop, boolMask.astype(int))[x_min:x_max+1, y_min:y_max+1]
 
-def findWell(imgToAnalyze:np.ndarray,
+def find_well(imgToAnalyze:np.ndarray,
     maskSizeUm:int,
     wellDiameterUm:int,
     muToPx:float):
@@ -81,7 +81,7 @@ def findWell(imgToAnalyze:np.ndarray,
     return boolArray
 
 
-def findSpheroid(imCropped:np.ndarray, 
+def find_spheroid(imCropped:np.ndarray, 
     wellDiameterUm:int,
     marginDistance:int, 
     umToPx:float,  
