@@ -11,3 +11,4 @@ tifffile
 tqdm
 pandas
 seaborn
+tox
