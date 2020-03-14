@@ -10,16 +10,16 @@ from skimage.transform import downscale_local_mean
 class VirtualStack:
 
     '''Handle tif exports from NIS'''
-    
-    def __init__(self, folder:str, search_names:str='*.tif', regex:str=r't(\d{2})z(\d)c(\d)'):
+
+    def __init__(self, folder:str, search_names:str='*.tif', regex:str=r'([ctmz])(\d{1,2})'):
         self.folder = folder
         self.flist = glob(os.path.join(folder, search_names))
         assert len(self.flist) > 0, 'No files found'
-        self.indices = list(map(get_indices, self.flist))
-        self.ranges = get_sizes(self.indices)
+        self.indices = list(map(lambda p: get_indices(p, regex), self.flist))
+        self.order = ''.join(self.indices[0].keys())
+        self.ranges = get_sizes(self.indices, self.order)
 
-     
-    def read(self, t=(None, None), z=(None, None), c=(None,None), bin=0):
+    def read(self, bin=0, **kwargs):
         '''
         Get generator with a selected sequence
 
@@ -37,30 +37,43 @@ class VirtualStack:
         ValueError if coordiantes are out of range
         '''
         ranges = []
-        for ax, values in zip('tzc', (t, z, c)):
-            _range = self.check_range(values, ax)
-            ranges.append(_range)
-        for _t in ranges[0]:
-            for _z in ranges[1]:
-                for _c in ranges[2]:
-                    img =  self.get_single_image(_t, _z, _c)
-                    if bin > 1:
-                        img = img.bin(bin)
-                    yield img
-      
-    def get_single_image(self, t:int, z:int, c:int) -> Well:
+        for ax in self.order:
+            if ax in kwargs:
+                _range = kwargs[ax]
+            else:
+                _range = None
+            ranges.append(self._check_range(_range, ax))
+        # print(ranges)
+
+        params=[{}]
+        for ax, _range in zip(self.order[-1::-1], ranges[-1::-1]):
+            params = [{**p, ax: r} for r in _range for p in params]
+        # print(params)
+        for param in params:
+            img =  self.get_single_image(**param)
+            if bin > 1:
+                img = img.bin(bin)
+            yield img
+
+    def get_single_image(self, **kwargs) -> Well:
         '''reads .tif from disk, returns api.core.Well instance'''
-        t, z, c = [self.check_range(v, ax)[0] for v, ax in zip((t,z,c), 'tzc')]
-        fname = get_fname({'t': t, 'z': z, 'c': c})
-        path = os.path.join(self.folder, fname)
-        return Well(imread(path),  meta={'t': t, 'z': z, 'c': c, 'path': fname, 'prefix': self.folder})
-    
-    def check_range(self, values:tuple, axis:str):
+        args = {ax: self._check_range(v, ax)[0] for ax, v in kwargs.items()}
+        try:
+            index = self.indices.index(args)
+        except ValueError:
+            raise ValueError(f'Can\'t find data for coordinates {args}')
+        path = self.flist[index]
+        if not os.path.exists(path):
+            raise ValueError(f'File not found for coordinates {args}')
+        fname = os.path.basename(path)
+        return Well(imread(path),  meta={**args, 'path': fname, 'prefix': self.folder})
+
+    def _check_range(self, values:tuple, axis:str):
         '''
         Check range values and generate range
-        
+
         '''
-        
+
         def single_check(value, axis=axis, upper:bool=False):
             side = ['min', 'max'][int(upper)]
             sr = self.ranges[axis]
@@ -69,12 +82,13 @@ class VirtualStack:
             assert isinstance(value, int)
             assert sr['min'] <= value <= sr['max'], f'{value} out of range for {axis}: {sr}'
             return value
-            
+
         if values is None:
             return range(single_check(None, upper=False), single_check(None, upper=True) + 1) 
+
         elif isinstance(values, int):
             return (single_check(values),)
-        
+
         elif isinstance(values, tuple):
             assert len(values) == 2
             return range(single_check(values[0], upper=False), single_check(values[1], upper=True) + 1)
@@ -82,35 +96,26 @@ class VirtualStack:
             raise ValueError(f'range {values} not understood, provide int or tuple')
 
     def __repr__(self):
-        return f'Virtial Stack instance. \nFound {len(self.flist)} files in {self.folder}. Ranges: {self.ranges}'
-   
+        return f'Virtial Stack instance. \nFound {len(self.flist)} files in {self.folder}. \nRanges: {self.ranges}'
 
-def get_indices(fname:str, regexp=r't(\d{2})z(\d)c(\d)', order='tzc'):
+
+def get_indices(fname:str, regexp=r'([ctmz])(\d{1,2})') -> dict:
+    '''
+    scans file name for regex and returns dict of values
+    '''
     r = re.compile(regexp)
-    finds = r.findall(fname)
-    assert len(finds) == 1
-    assert len(finds[0]) == 3
-    indices = {k: int(v) for k, v in zip(order, finds[0])}
+    res = r.findall(fname)
+    assert len(res) > 0, f'Nothing found in {fname} using regexp {regexp}'
+    indices = {k: int(v) for k, v in res}
     return indices
-
-
-def get_fname(indices:dict, order='tzc'):
-    '''
-    Returns filename.tif in format `t00z0c0.tif`
-    '''
-    assert ''.join(indices.keys()) == order
-    t, z, c = indices.values()
-#     print(t,z,c)
-    return f't{t:02d}z{z}c{c}.tif'
 
 
 def get_sizes(indices:dict, order='tzc'):
     '''
     Returns min-max values for each dimension in the dict
     '''
-    tzc = np.array([[d['t'], d['z'], d['c']] for d in indices], dtype='uint8')
+    tzc = np.array([[d[ax] for ax in order] for d in indices], dtype='uint8')
     _max = tzc.max(axis=0)
     _min = tzc.min(axis=0)
     ranges = {o: {'min': low, 'max': high} for o, low, high in zip(order, _min, _max)}
     return ranges
-    

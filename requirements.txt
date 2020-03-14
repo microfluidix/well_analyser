@@ -1,0 +1,14 @@
+numpy
+scipy
+opencv-python
+scikit-image
+pims_nd2
+nd2reader
+pytest
+coverage
+pytest-cov
+tifffile
+tqdm
+pandas
+seaborn
+tox
