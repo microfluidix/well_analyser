@@ -26,9 +26,7 @@ before_script:
   - pip install -r requirements.txt
 
 test:
-  script:
-    - python setup.py install
-    - pip install tox 
+  script: 
     - tox
 
 run:
