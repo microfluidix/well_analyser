@@ -7,3 +7,4 @@
 # *.ipynb
 *.tif
 .DS_Store
+venv
