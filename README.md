@@ -4,20 +4,48 @@
 
 Make sure you use Python 3.8 `python -V`
 
-If not:
+Otherwise:
 
 ```
 conda create -n ia python=3.8
 conda activate ia
 ```
 
-or download and install Python 3.8 
+or download and install Python 3.8
 
 Install the package in development mode.
 ```
 git clone git@gitlab.pasteur.fr:pub/image-analysis.git
 cd image-analysis
 pip install -e .
+pip install -r requirements.txt
+```
+
+## How to contribute
+
+Commit your changes into separate branch with clear name of what's intended to be done.
+
+Write clean code. Supply functions with types, default arguments and doc strings.
+
+Every function should have  unit tests.
+
+Update documentation with new fuctionality.
+
+Once your code meets the goal and all test are passing, make a pull request.
+
+## How to test
+
+Test in virtual environment allows to check if all dependencies included in setup.py
+
+```
+pip install tox
+
+tox
+```
+
+To see coverage report, run
+```
+pytest --cov api
 ```
 
 ## API
