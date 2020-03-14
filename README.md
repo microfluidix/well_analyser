@@ -208,6 +208,27 @@ w
 
 ![png](img/output_12_2.png)
 
+## Segmenting a spheroid
+
+### a) from a single well
+
+Where each .tiff file has a single well to crop. Then:
+
+```python
+
+muTopx = 3
+wellSize = 410
+cropSize = 410
+
+from api import segment
+
+vs = read.VirtualStack(folder=prefix, search_names='*.tif', regex=r'([ctmz])(\d{1,2})')
+BF_img = vs.get_single_image(t=2,z=1,c=1)
+
+BF_crop = segment.select_well(im, wellSize, cropSize, muTopx)
+BF_sph = segment.find_spheroid(BF_crop, wellSize, muTopx)
+```
+
 
 
 

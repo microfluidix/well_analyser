@@ -82,9 +82,9 @@ def find_well(imgToAnalyze:np.ndarray,
 
 
 def find_spheroid(imCropped:np.ndarray, 
-    wellDiameterUm:int,
-    marginDistance:int, 
-    umToPx:float,  
+    wellDiameterUm:int, 
+    umToPx:float, 
+    marginDistance = 40, 
     fraction = 5,
     minRegionArea = 15000, 
     maxRegionArea = 120000):

@@ -23,7 +23,7 @@ def _test_crop():
 
         im = imread(fileName)
         im_crop = segment.select_well(im, 410, 410, 3)
-        im_sph = segment.find_spheroid(im_crop, 410, 40, 3)
+        im_sph = segment.find_spheroid(im_crop, 410, 3)
 
         fig, ax = plt.subplots(1,3)
 

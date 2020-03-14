@@ -6,7 +6,7 @@ import pandas
 from skimage.measure import label, regionprops_table
 
 def spheroid_properties(img_labeled,
-    img_intensity):
+    img_intensity = None):
 
     """
 
@@ -18,13 +18,23 @@ def spheroid_properties(img_labeled,
 
     """
 
-    properties = ['label', 
-        'area', 
-        'perimeter',
-        'eccentricity',
-        'orientation',
-        'major_axis_length',
-        'mean_intensity']
+    if img_intensity is not None:
+
+        properties = ['label', 
+            'area', 
+            'perimeter',
+            'eccentricity',
+            'orientation',
+            'major_axis_length',
+            'mean_intensity']
+
+    else:
+        properties = ['label', 
+            'area', 
+            'perimeter',
+            'eccentricity',
+            'orientation',
+            'major_axis_length']
 
     im_label = label(img_labeled)
 
