@@ -6,4 +6,5 @@
 *egg*
 # *.ipynb
 *.tif
+*.tiff
 .DS_Store

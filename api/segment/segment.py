@@ -85,7 +85,7 @@ def findSpheroid(imCropped:np.ndarray,
     wellDiameterUm:int,
     marginDistance:int, 
     umToPx:float,  
-    fraction = 3,
+    fraction = 5,
     minRegionArea = 15000, 
     maxRegionArea = 120000):
 
@@ -141,4 +141,4 @@ def findSpheroid(imCropped:np.ndarray,
             temp[imLabel == region.label] = 0
             #region given same value as sph. border
 
-    return imLabel
+    return temp
