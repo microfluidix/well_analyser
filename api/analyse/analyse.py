@@ -6,8 +6,8 @@ from numpy import unravel_index
 from scipy import ndimage, misc
 from skimage.measure import label, regionprops
 
-def spheroid_properties(img_labeled:np.ndarray(int),
-    img_intensity:np.ndarray(int) = None):
+def spheroid_properties(img_labeled,
+    img_intensity = None):
 
     """
 
@@ -21,20 +21,22 @@ def spheroid_properties(img_labeled:np.ndarray(int),
 
     spheroid_props = {}
 
-    im_label = label(img_labeled, img_intensity)
+    im_label = label(img_labeled)
 
     for region in regionprops(im_label):
 
-        spheroid_props['spheroid label'] = region.label
+        dic = {}
 
-        spheroid_props['spheroid label']['ecc'] = region.eccentricity
-        spheroid_props['spheroid label']['perimenter'] = region.perimeter
-        spheroid_props['spheroid label']['area'] = region.area
-        spheroid_props['spheroid label']['orientation'] = region.orientation
-        spheroid_props['spheroid label']['major_axis_length'] = region.major_axis_length
-        spheroid_props['spheroid label']['minor_axis_length'] = region.minor_axis_length
+        dic['ecc'] = region.eccentricity
+        dic['perimenter'] = region.perimeter
+        dic['area'] = region.area
+        dic['orientation'] = region.orientation
+        dic['major_axis_length'] = region.major_axis_length
+        dic['minor_axis_length'] = region.minor_axis_length
 
         if img_intensity != None:
-            spheroid_props['spheroid label']['intensity'] = region.mean_intensity
+            dic['intensity'] = region.mean_intensity
+
+        spheroid_props[region.label] = dic
 
     return spheroid_props

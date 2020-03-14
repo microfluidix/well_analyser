@@ -25,7 +25,7 @@ def select_well(imgToAnalyze:np.ndarray,
     
     """
 
-    boolMask = findWell(imgToAnalyze,
+    boolMask = find_well(imgToAnalyze,
         maskSizeUm,
         wellDiameterUm,
         muToPx)
