@@ -7,3 +7,4 @@
 # *.ipynb
 *.tif
 *.tiff
+.DS_Store
