@@ -2,6 +2,7 @@ import os
 import sys
 import numpy as np
 import pandas
+import trackpy
 
 from skimage.measure import label, regionprops_table
 
@@ -42,7 +43,9 @@ def spheroid_properties(img_labeled,
 
     return pandas.DataFrame(regionprops_table(im_label, img_intensity, properties))
 
-def find_single_cells(img_fluo:np.ndarray):
+def find_single_cells(img_fluo:np.ndarray,
+    diameter:int,
+    minmass:int):
 
     """
 
@@ -53,4 +56,4 @@ def find_single_cells(img_fluo:np.ndarray):
     
     """
 
-    return cell_frame
+    return trackpy.locate(img_fluo, diameter = diameter, minmass = minmass)
