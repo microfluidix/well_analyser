@@ -12,6 +12,7 @@ from skimage.measure import label, regionprops
 import api.segment.utilities as utilities
 
 def select_well(imgToAnalyze:np.ndarray,
+    imgToCrop:np.ndarray,
     maskSizeUm:int,
     wellDiameterUm:int,
     muToPx:float):
@@ -30,7 +31,7 @@ def select_well(imgToAnalyze:np.ndarray,
         wellDiameterUm,
         muToPx)
 
-    return crop(imgToAnalyze, boolMask)
+    return crop(imgToCrop, boolMask)
 
 
 def crop(imgToCrop:np.ndarray,

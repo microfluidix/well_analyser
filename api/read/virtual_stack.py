@@ -11,7 +11,7 @@ class VirtualStack:
 
     '''Handle tif exports from NIS'''
 
-    def __init__(self, folder:str, search_names:str='*.tif', regex:str=r'([ctmz])(\d{1,2})'):
+    def __init__(self, folder:str, search_names:str='*.tif', regex:str=r'([ctmz])(\d{1,3})'):
         self.folder = folder
         self.flist = glob(os.path.join(folder, search_names))
         assert len(self.flist) > 0, 'No files found'
@@ -99,7 +99,7 @@ class VirtualStack:
         return f'Virtial Stack instance. \nFound {len(self.flist)} files in {self.folder}. \nRanges: {self.ranges}'
 
 
-def get_indices(fname:str, regexp=r'([ctmz])(\d{1,2})') -> dict:
+def get_indices(fname:str, regexp=r'([ctmz])(\d{1,3})') -> dict:
     '''
     scans file name for regex and returns dict of values
     '''
@@ -114,7 +114,7 @@ def get_sizes(indices:dict, order='tzc'):
     '''
     Returns min-max values for each dimension in the dict
     '''
-    tzc = np.array([[d[ax] for ax in order] for d in indices], dtype='uint8')
+    tzc = np.array([[d[ax] for ax in order] for d in indices], dtype='uint16')
     _max = tzc.max(axis=0)
     _min = tzc.min(axis=0)
     ranges = {o: {'min': low, 'max': high} for o, low, high in zip(order, _min, _max)}

@@ -41,7 +41,13 @@ def spheroid_properties(img_labeled,
 
     im_label = label(img_labeled)
 
-    return pandas.DataFrame(regionprops_table(im_label, img_intensity, properties))
+    if len(np.unique(im_label)) > 1:
+
+        return pandas.DataFrame(regionprops_table(im_label, img_intensity, properties))
+
+    else:
+
+        return pandas.DataFrame()
 
 def find_single_cells(img_fluo:np.ndarray,
     diameter:int,
