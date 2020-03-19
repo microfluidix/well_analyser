@@ -11,7 +11,7 @@ from tifffile import imread
 from pandas._testing import assert_frame_equal
 
 
-def _test_analyse():
+def test_analyse():
 
     img = np.zeros((20,20))
     img[5:10, 10:15] = 1
@@ -40,4 +40,4 @@ def _test_analyse_functional():
 
 
 if __name__ == "__main__":
-    _test_analyse()
+    test_analyse()
