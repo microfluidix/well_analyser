@@ -3,7 +3,6 @@ import sys
 import numpy as np
 import pandas
 
-import trackpy
 from skimage.measure import label, regionprops_table
 
 def spheroid_properties(img_labeled,

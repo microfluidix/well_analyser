@@ -7,17 +7,20 @@ import matplotlib.pyplot as plt
 import glob
 from tifffile import imread
 
-def test_well():
+def test_crop():
     shape = (20,20)
-    arr = np.zeros(shape)
+    arr = np.zeros(shape, dtype = 'int64')
+    bool_arr = np.zeros(shape)
 
-    arr[5:15, 10:20] = utilities._make_circ_mask(10, 10, 1)
+    bool_arr[1:6,11:16] = 1
+    bool_arr = bool_arr.astype(bool)
 
-    #assert well.shape == shape
-    #assert well.meta['shape'] == shape
-    #assert well.ndim == len(shape)
+    cropped_arr = segment.crop(arr, bool_arr)
 
-def _test_crop():
+    assert cropped_arr.shape == (5,5)
+    assert cropped_arr.dtype == 'int64'
+
+def _test_crop_functional():
 
     for fileName in glob.glob('*.tif'):
 
