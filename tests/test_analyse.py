@@ -18,12 +18,12 @@ def _test_analyse():
 
     props = analyse.spheroid_properties(img)
     ground_truth_frame = pandas.DataFrame(
-        [[1, 25, 16.0, 0.0, 0.785398, 5.656854]],
-        columns = ['label', 'area', 'perimeter', 
-        'eccentricity', 'orientation', 'major_axis_length'])
+        [[1, 25, 7, 12, 16.0, 0.0, 0.785398, 5.656854]],
+        columns = ['label', 'area', 'centroid-0', 'centroid-1',
+        'perimeter', 'eccentricity', 'orientation', 
+        'major_axis_length'])
 
     assert_frame_equal(props, ground_truth_frame)
-    assert props == ground_truth_frame
 
 def _test_analyse_functional():
 

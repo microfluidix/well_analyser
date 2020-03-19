@@ -21,7 +21,8 @@ def spheroid_properties(img_labeled,
     if img_intensity is not None:
 
         properties = ['label', 
-            'area', 
+            'area',
+            'centroid',
             'perimeter',
             'eccentricity',
             'orientation',
@@ -30,7 +31,8 @@ def spheroid_properties(img_labeled,
 
     else:
         properties = ['label', 
-            'area', 
+            'area',
+            'centroid',
             'perimeter',
             'eccentricity',
             'orientation',
