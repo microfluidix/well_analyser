@@ -9,12 +9,25 @@ from api.analyse import analyse
 
 
 def get_image_array(VirtualStack, 
-    m, 
-    c):
+    m:int, 
+    c:int):
     
     c2_time_reader = VirtualStack.read(t = None, m = m, c = c)
     
     return [img.array for img in c2_time_reader]
+
+def get_cell_tracks(VirtualStack,
+    m:int,
+    c:int,
+    muTopx = 3,
+    minsize = 10,
+    minmass = 10000):
+
+    img_list = get_image_array(VirtualStack, m, c)
+
+    min_size = muTopx*minsize
+
+    return trackpy.batch(img_list, min_size, minmass=minmass)
 
 def get_spheroid_properties(VirtualStack,
     m:int,
@@ -44,11 +57,3 @@ def get_spheroid_properties(VirtualStack,
 
     return spheroid_frame
 
-def get_cell_tracks(img_list:np.ndarray,
-    muTopx = 3,
-    minsize = 10,
-    minmass = 10000):
-
-    min_size = muTopx*minsize
-
-    return trackpy.batch(img_list, min_size, minmass=minmass)
