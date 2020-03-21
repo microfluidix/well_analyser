@@ -8,7 +8,7 @@ from glob import glob
 def create_test_data(prefix):
     if not os.path.exists(prefix):
         os.mkdir(prefix)
-    for m in range(101):
+    for m in range(1):
         for t in range(11):
             for z in range(1):
                 for c in range(1):
@@ -32,20 +32,23 @@ def test_virtual_stack(prefix='tests/tmp'):
     vs = read.VirtualStack(prefix)
 
     assert vs.order == 'mtzc'
-    assert tuple(vs.ranges['m'].values()) == (0,100)
+    assert tuple(vs.ranges['m'].values()) == (0,0)
     assert tuple(vs.ranges['t'].values()) == (0,10)
     assert tuple(vs.ranges['z'].values()) == (0,0)
     assert tuple(vs.ranges['c'].values()) == (0,0)
 
     img = vs.get_single_image(m=0, t=0, z=0, c=0)
     assert img.array.shape == (8,8)
-    assert img.meta['path'] == 'm00t00z00c0.tif'
+
+    print(img.meta)
+
+    assert img.meta['path'] == 'm00t000z00c0.tif'
     assert img.meta['t'] == 0
     assert img.meta['m'] == 0
     assert img.meta['z'] == 0
     assert img.meta['c'] == 0
 
-    reader = vs.read(t=None, m=1, z=0, c=0)
+    reader = vs.read(t=None, m=0, z=0, c=0)
     stack = []
     for img in reader:
         stack.append(img)
@@ -53,7 +56,7 @@ def test_virtual_stack(prefix='tests/tmp'):
     assert len(stack) == 11
     assert isinstance(stack[0], Well)
 
-    assert Well.stack(stack).array.shape == (150, 8, 8)
+    assert Well.stack(stack).array.shape == (11, 8, 8)
 
     assert stack[0].bin(2).array.shape == (4,4)
 
