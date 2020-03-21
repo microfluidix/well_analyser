@@ -85,9 +85,9 @@ def find_well(imgToAnalyze:np.ndarray,
 def find_spheroid(imCropped:np.ndarray, 
     wellDiameterUm:int, 
     umToPx:float, 
-    marginDistance = 40, 
-    fraction = 5,
-    minRegionArea = 15000, 
+    marginDistance = 60, 
+    fraction = 2.5,
+    minRegionArea = 10000, 
     maxRegionArea = 120000):
 
     """
@@ -104,24 +104,25 @@ def find_spheroid(imCropped:np.ndarray,
 
     result1 = ndimage.sobel(imCropped, 1)
     result2 = ndimage.sobel(imCropped, 0)
-
-    mask = utilities._make_disk_mask(wellDiameterUm, wellDiameterUm-marginDistance-20,
+    
+    mask = utilities._make_disk_mask(wellDiameterUm, wellDiameterUm-marginDistance,
         umToPx)
 
     a, b = np.shape(result1)
 
     sobelMasked = np.multiply(mask, np.sqrt(result1**2+result2**2))
     toThresh = gaussian_filter(sobelMasked, sigma=5)
-
+    
     imThresh = toThresh > np.max(toThresh)/fraction
-
+    
     cnts, _ = cv2.findContours(imThresh.astype('uint8'), 
         cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     temp = cv2.drawContours(imThresh.astype('uint8'), 
         cnts, -1, (255,255,255), thickness=cv2.FILLED)
-
+    
+    
     imLabel = label(temp)
-
+    
     for region in regionprops(imLabel):
 
         if region.area < minRegionArea:
