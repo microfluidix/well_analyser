@@ -31,9 +31,22 @@ def get_cell_tracks(VirtualStack,
 
 def get_spheroid_properties(VirtualStack,
     m:int,
-    spheroid_channel:int):
+    spheroid_channel:int,
+    fluo_channel:int,
+    get_fluo = False,
+    muTopx = 3):
 
-    """"""
+    """
+    
+    extracts spheroid properties from image batch.
+
+    COMMENT: with meta data we will integrate the above
+    variables implicitely.
+
+    Returns:
+     - pandas.DataFrame
+    
+    """
 
     spheroid_frame = pandas.DataFrame()
 
@@ -45,11 +58,26 @@ def get_spheroid_properties(VirtualStack,
         
         t = img.meta['t']
         m = img.meta['m']
+
+        # function to be changed to Andrey's version
         
-        crop_img_BF = segment.select_well(img.array, img.array, 430, 430, 3)            
-        sph_img = segment.find_spheroid(crop_img_BF, 430, 3)
+        crop_img_BF = segment.select_well(img.array, img.array, 430, 430, muTopx)            
+        sph_img = segment.find_spheroid(crop_img_BF, 430, muTopx)
+
+        if get_fluo:
+
+            img_Fluo = VirtualStack.get_single_image(m=m, t=t, c=fluo_channel)
+
+            crop_img_Fluo = segment.select_well(img.array, 
+                img_Fluo, 430, 430, muTopx)
+
+            timeFrame = analyse.spheroid_properties(sph_img, crop_img_Fluo)
         
-        timeFrame = analyse.spheroid_properties(sph_img)
+        else:
+            
+            timeFrame = analyse.spheroid_properties(sph_img)
+        
+        
         timeFrame['t'] = t
         timeFrame['m'] = m
         
