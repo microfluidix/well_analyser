@@ -10,11 +10,11 @@ from api.segment import verify_segmentation
 import api.segment.utilities as utilities
 
 
-def get_image_array(VirtualStack, 
+def get_image_array(vs:VirtualStack, 
     m:int, 
     c:int):
     
-    c2_time_reader = VirtualStack.read(t = None, m = m, c = c)
+    c2_time_reader = vs.read(t = None, m = m, c = c)
 
     print(c2_time_reader)
 
@@ -24,9 +24,10 @@ def get_image_array(VirtualStack,
     
     return stack
 
-def get_cell_tracks(VirtualStack,
-    c:int,
+def get_cell_tracks(vs:VirtualStack,
+    fluo_channel:int,
     muTopx = 3,
+    search_range = 40,
     minsize = 10,
     minmass = 10000):
 
@@ -42,16 +43,18 @@ def get_cell_tracks(VirtualStack,
     min_size = (2*muTopx*minsize//2)+1
     track_frame = pandas.DataFrame()
 
-    for m in VirtualStack.ranges['m'].values():
+    for m in vs.ranges['m'].values():
         
         # the parameter values returned by vs.ranges is a str
         # but the input of vs.read is an int.
-        well_frame = trackpy.batch(get_image_array(VirtualStack, int(m), c), 
+        well_frame = trackpy.batch(get_image_array(vs, int(m), fluo_channel), 
             min_size, 
             minmass=minmass)
 
-        well_frame = trackpy.link_df(well_frame, search_range = 40,
-            memory=0, neighbor_strategy='BTree', link_strategy='recursive')
+        well_frame = trackpy.link_df(well_frame, 
+            search_range = search_range*muTopx,
+            memory=0, neighbor_strategy='BTree', 
+            link_strategy='recursive')
 
         well_frame['m'] = m
 
@@ -59,7 +62,7 @@ def get_cell_tracks(VirtualStack,
 
     return track_frame
 
-def get_spheroid_properties(VirtualStack,
+def get_spheroid_properties(vs:VirtualStack,
     spheroid_channel:int,
     fluo_channel:int,
     get_fluo = False,
@@ -81,7 +84,7 @@ def get_spheroid_properties(VirtualStack,
 
     spheroid_frame = pandas.DataFrame()
 
-    c1_time_reader = VirtualStack.read(t = None, 
+    c1_time_reader = vs.read(t = None, 
         m = None, 
         c = spheroid_channel)
 
@@ -102,7 +105,7 @@ def get_spheroid_properties(VirtualStack,
 
             if get_fluo:
 
-                img_Fluo = VirtualStack.get_single_image(m=m, t=t, c=fluo_channel)
+                img_Fluo = vs.get_single_image(m=m, t=t, c=fluo_channel)
 
 
                 crop_img_Fluo = segment.select_well(img.array, 
@@ -121,7 +124,7 @@ def get_spheroid_properties(VirtualStack,
             timeFrame['well_center_y'] = yc
             timeFrame['mask_size'] = wellSizeMu*muTopx
 
-            folder = VirtualStack.folder
+            folder = vs.folder
 
             if not os.path.exists(os.path.join(folder, 'spheroid_data_frame')):
                 os.makedirs(os.path.join(folder, 'spheroid_data_frame'))
@@ -136,7 +139,7 @@ def get_spheroid_properties(VirtualStack,
 
             if verify_seg:
 
-                folder = VirtualStack.folder
+                folder = vs.folder
 
                 if not os.path.exists(os.path.join(folder, 'verify segmentation')):
                     os.makedirs(os.path.join(folder, 'verify segmentation'))
