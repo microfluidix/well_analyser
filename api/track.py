@@ -13,21 +13,49 @@ def get_image_array(VirtualStack,
     c:int):
     
     c2_time_reader = VirtualStack.read(t = None, m = m, c = c)
+
+    print(c2_time_reader)
+
+    stack = []
+    for img in c2_time_reader:
+        stack.append(img.array)
     
-    return [img.array for img in c2_time_reader]
+    return stack
 
 def get_cell_tracks(VirtualStack,
-    m:int,
     c:int,
     muTopx = 3,
     minsize = 10,
     minmass = 10000):
 
-    img_list = get_image_array(VirtualStack, m, c)
+    """
+    
+    Takes a VirtualStack as entry and returns the cell tracks.
 
-    min_size = muTopx*minsize
+    Returns:
+     - pandas.DataFrame
+    
+    """
 
-    return trackpy.batch(img_list, min_size, minmass=minmass)
+    min_size = (2*muTopx*minsize//2)+1
+    track_frame = pandas.DataFrame()
+
+    for m in VirtualStack.ranges['m'].values():
+        
+        # the parameter values returned by vs.ranges is a str
+        # but the input of vs.read is an int.
+        well_frame = trackpy.batch(get_image_array(VirtualStack, int(m), 0), 
+            min_size, 
+            minmass=minmass)
+
+        well_frame = trackpy.link_df(well_frame, search_range = 40,
+            memory=0, neighbor_strategy='BTree', link_strategy='recursive')
+
+        well_frame['m'] = m
+
+        track_frame = track_frame.append(well_frame)
+
+    return track_frame
 
 def get_spheroid_properties(VirtualStack,
     m:int,
@@ -60,7 +88,6 @@ def get_spheroid_properties(VirtualStack,
         m = img.meta['m']
 
         # function to be changed to Andrey's version
-        
         crop_img_BF = segment.select_well(img.array, img.array, 430, 430, muTopx)            
         sph_img = segment.find_spheroid(crop_img_BF, 430, muTopx)
 

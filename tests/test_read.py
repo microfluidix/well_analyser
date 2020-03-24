@@ -61,3 +61,6 @@ def test_virtual_stack(prefix='tests/tmp'):
     assert stack[0].bin(2).array.shape == (4,4)
 
     demolish_data(prefix)
+
+if __name__ == "__main__":
+    test_virtual_stack()

@@ -13,3 +13,4 @@ pandas
 seaborn
 tox
 trackpy
+sklearn
