@@ -123,6 +123,10 @@ def get_spheroid_properties(VirtualStack,
 
         if not os.path.exists(os.path.join(folder, 'spheroid_data_frame')):
             os.makedirs(os.path.join(folder, 'spheroid_data_frame'))
+
+        timeFrame.to_csv(os.path.join(os.path.join(folder, 
+            'spheroid_data_frame',
+            str(m) + '_' str(t))))
         
         spheroid_frame = spheroid_frame.append(timeFrame)
 
