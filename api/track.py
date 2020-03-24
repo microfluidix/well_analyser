@@ -45,7 +45,7 @@ def get_cell_tracks(VirtualStack,
         
         # the parameter values returned by vs.ranges is a str
         # but the input of vs.read is an int.
-        well_frame = trackpy.batch(get_image_array(VirtualStack, int(m), 0), 
+        well_frame = trackpy.batch(get_image_array(VirtualStack, int(m), c), 
             min_size, 
             minmass=minmass)
 
@@ -97,6 +97,7 @@ def get_spheroid_properties(VirtualStack,
         if get_fluo:
 
             img_Fluo = VirtualStack.get_single_image(m=m, t=t, c=fluo_channel)
+
 
             crop_img_Fluo = segment.select_well(img.array, 
                 img_Fluo.array, 430, 430, muTopx)
