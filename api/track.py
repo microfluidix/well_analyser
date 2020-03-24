@@ -6,6 +6,7 @@ import pandas
 
 from api.segment import segment
 from api.analyse import analyse
+from api.segment import verify_segmentation
 
 
 def get_image_array(VirtualStack, 
@@ -58,10 +59,10 @@ def get_cell_tracks(VirtualStack,
     return track_frame
 
 def get_spheroid_properties(VirtualStack,
-    m:int,
     spheroid_channel:int,
     fluo_channel:int,
     get_fluo = False,
+    verify_seg = False,
     muTopx = 3):
 
     """
@@ -79,10 +80,12 @@ def get_spheroid_properties(VirtualStack,
     spheroid_frame = pandas.DataFrame()
 
     c1_time_reader = VirtualStack.read(t = None, 
-        m = m, 
+        m = None, 
         c = spheroid_channel)
 
     for img in c1_time_reader:
+
+        print(img.meta)
         
         t = img.meta['t']
         m = img.meta['m']
@@ -96,7 +99,7 @@ def get_spheroid_properties(VirtualStack,
             img_Fluo = VirtualStack.get_single_image(m=m, t=t, c=fluo_channel)
 
             crop_img_Fluo = segment.select_well(img.array, 
-                img_Fluo, 430, 430, muTopx)
+                img_Fluo.array, 430, 430, muTopx)
 
             timeFrame = analyse.spheroid_properties(sph_img, crop_img_Fluo)
         
@@ -105,10 +108,25 @@ def get_spheroid_properties(VirtualStack,
             timeFrame = analyse.spheroid_properties(sph_img)
         
         
-        timeFrame['t'] = t
-        timeFrame['m'] = m
+        timeFrame['t'] = int(t)
+        timeFrame['m'] = int(m)
         
         spheroid_frame = spheroid_frame.append(timeFrame)
+
+        # Verify segmentation
+
+        if verify_seg:
+
+            folder = VirtualStack.folder
+
+            if not os.path.exists(os.path.join(folder, 'verify segmentation')):
+                os.makedirs(os.path.join(folder, 'verify segmentation'))
+
+            verify_segmentation.verifySegmentationBF(crop_img_BF,
+                sph_img,
+                os.path.join(folder, 'verify segmentation'),
+                int(m),
+                int(t))
 
     return spheroid_frame
 
