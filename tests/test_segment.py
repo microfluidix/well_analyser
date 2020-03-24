@@ -44,4 +44,4 @@ def _test_crop_functional():
 
 
 if __name__ == "__main__":
-    _test_crop()
+    test_crop()
