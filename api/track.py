@@ -7,6 +7,7 @@ import pandas
 from api.segment import segment
 from api.analyse import analyse
 from api.segment import verify_segmentation
+import api.segment.utilities as utilities
 
 
 def get_image_array(VirtualStack, 
@@ -63,6 +64,7 @@ def get_spheroid_properties(VirtualStack,
     fluo_channel:int,
     get_fluo = False,
     verify_seg = False,
+    wellSizeMu = 430,
     muTopx = 3):
 
     """
@@ -90,9 +92,11 @@ def get_spheroid_properties(VirtualStack,
         t = img.meta['t']
         m = img.meta['m']
 
+        (xc, yc) = utilities._get_center(img.array,wellSizeMu,wellSizeMu,muTopx)
+
         # function to be changed to Andrey's version
-        crop_img_BF = segment.select_well(img.array, img.array, 430, 430, muTopx)            
-        sph_img = segment.find_spheroid(crop_img_BF, 430, muTopx)
+        crop_img_BF = segment.select_well(img.array, img.array, wellSizeMu, wellSizeMu, muTopx)            
+        sph_img = segment.find_spheroid(crop_img_BF, wellSizeMu, muTopx)
 
         if get_fluo:
 
@@ -100,7 +104,7 @@ def get_spheroid_properties(VirtualStack,
 
 
             crop_img_Fluo = segment.select_well(img.array, 
-                img_Fluo.array, 430, 430, muTopx)
+                img_Fluo.array, wellSizeMu, wellSizeMu, muTopx)
 
             timeFrame = analyse.spheroid_properties(sph_img, crop_img_Fluo)
         
@@ -111,6 +115,14 @@ def get_spheroid_properties(VirtualStack,
         
         timeFrame['t'] = int(t)
         timeFrame['m'] = int(m)
+        timeFrame['well_center_x'] = xc
+        timeFrame['well_center_y'] = yc
+        timeFrame['mask_size'] = wellSizeMu*muTopx
+
+        folder = VirtualStack.folder
+
+        if not os.path.exists(os.path.join(folder, 'spheroid_data_frame')):
+            os.makedirs(os.path.join(folder, 'spheroid_data_frame'))
         
         spheroid_frame = spheroid_frame.append(timeFrame)
 
