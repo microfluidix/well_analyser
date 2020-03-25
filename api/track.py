@@ -24,7 +24,7 @@ def get_cell_tracks(vs,
     muTopx = 3,
     search_range = 40,
     minsize = 10,
-    minmass = 10000):
+    minmass = 100000):
 
     """
     
