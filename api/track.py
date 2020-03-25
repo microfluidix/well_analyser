@@ -39,7 +39,9 @@ def get_cell_tracks(vs,
     track_frame = pandas.DataFrame()
     analyzed_list = []
 
-    for m in vs.ranges['m'].values():
+    m_list = np.arange(vs.ranges['m']['min'],vs.ranges['m']['max']+1)
+
+    for m in m_list:
 
         if m not in analyzed_list:
         
