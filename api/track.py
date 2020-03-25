@@ -15,7 +15,7 @@ def get_image_array(vs,
     m:int, 
     fluo_channel:int):
 
-    fnames = 'm' + str(m) + '*c' + str(fluo_channel) + '.tif'
+    fnames = f'm{m:02d}*c{fluo_channel}.tif'
     
     return pims.open(os.path.join(vs.folder, fnames))
 
