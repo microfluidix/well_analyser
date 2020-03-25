@@ -2,6 +2,7 @@ import os
 import numpy as np
 
 import trackpy
+import pims
 import pandas
 
 from api.segment import segment
@@ -10,21 +11,13 @@ from api.segment import verify_segmentation
 import api.segment.utilities as utilities
 
 
-def get_image_array(vs:VirtualStack, 
+def get_image_array(vs, 
     m:int, 
-    c:int):
+    fluo_channel:int):
     
-    c2_time_reader = vs.read(t = None, m = m, c = c)
+    return pims.open(os.path.join(vs.folder, '*c' + str(fluo_channel) + '.tif'))
 
-    print(c2_time_reader)
-
-    stack = []
-    for img in c2_time_reader:
-        stack.append(img.array)
-    
-    return stack
-
-def get_cell_tracks(vs:VirtualStack,
+def get_cell_tracks(vs,
     fluo_channel:int,
     muTopx = 3,
     search_range = 40,
@@ -42,27 +35,32 @@ def get_cell_tracks(vs:VirtualStack,
 
     min_size = (2*muTopx*minsize//2)+1
     track_frame = pandas.DataFrame()
+    analyzed_list = []
 
     for m in vs.ranges['m'].values():
+
+        if m not in analyzed_list:
         
-        # the parameter values returned by vs.ranges is a str
-        # but the input of vs.read is an int.
-        well_frame = trackpy.batch(get_image_array(vs, int(m), fluo_channel), 
-            min_size, 
-            minmass=minmass)
+            # the parameter values returned by vs.ranges is a str
+            # but the input of vs.read is an int.
+            well_frame = trackpy.batch(get_image_array(vs, int(m), fluo_channel), 
+                min_size, 
+                minmass=minmass)
 
-        well_frame = trackpy.link_df(well_frame, 
-            search_range = search_range*muTopx,
-            memory=0, neighbor_strategy='BTree', 
-            link_strategy='recursive')
+            well_frame = trackpy.link_df(well_frame, 
+                search_range = search_range*muTopx,
+                memory=0, neighbor_strategy='BTree', 
+                link_strategy='recursive')
 
-        well_frame['m'] = m
+            well_frame['m'] = m
 
-        track_frame = track_frame.append(well_frame)
+            track_frame = track_frame.append(well_frame)
+
+            analyzed_list.append(m)
 
     return track_frame
 
-def get_spheroid_properties(vs:VirtualStack,
+def get_spheroid_properties(vs,
     spheroid_channel:int,
     fluo_channel:int,
     get_fluo = False,
