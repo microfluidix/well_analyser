@@ -14,8 +14,10 @@ import api.segment.utilities as utilities
 def get_image_array(vs, 
     m:int, 
     fluo_channel:int):
+
+    fnames = 'm' + str(m) + '*c' + str(fluo_channel) + '.tif'
     
-    return pims.open(os.path.join(vs.folder, '*c' + str(fluo_channel) + '.tif'))
+    return pims.open(os.path.join(vs.folder, fnames))
 
 def get_cell_tracks(vs,
     fluo_channel:int,

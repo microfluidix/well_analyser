@@ -34,7 +34,7 @@ def test_virtual_stack(prefix='tests/tmp'):
 
     vs = read.VirtualStack(prefix)
 
-    track_frame = track.get_cell_tracks(vs, c = 0)
+    track_frame = track.get_cell_tracks(vs, fluo_channel = 0)
 
     print(track_frame['m'].unique())
 
