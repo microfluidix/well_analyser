@@ -49,11 +49,6 @@ def get_cell_tracks(vs,
                 min_size, 
                 minmass=minmass)
 
-            well_frame = trackpy.link_df(well_frame, 
-                search_range = search_range*muTopx,
-                memory=0, neighbor_strategy='BTree', 
-                link_strategy='recursive')
-
             well_frame['m'] = m
 
             track_frame = track_frame.append(well_frame)
