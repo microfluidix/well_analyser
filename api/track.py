@@ -24,7 +24,8 @@ def get_cell_tracks(vs,
     muTopx = 3,
     search_range = 40,
     minsize = 10,
-    minmass = 10000):
+    minmass = 10000,
+    percentile = 90):
 
     """
     
@@ -49,7 +50,8 @@ def get_cell_tracks(vs,
             # but the input of vs.read is an int.
             well_frame = trackpy.batch(get_image_array(vs, int(m), fluo_channel), 
                 min_size, 
-                minmass=minmass)
+                minmass=minmass,
+                percentile = percentile)
 
             well_frame['m'] = m
 
