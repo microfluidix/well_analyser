@@ -1,11 +1,44 @@
-from api.segment import utilities
-from api.segment import segment
-
+import pandas
+import os
 import numpy as np
-from PIL import Image
-import matplotlib.pyplot as plt
-import glob
-from tifffile import imread
+from glob import glob
+from tifffile import imread, imwrite
+
+from api.segment import segment
+from api import read
+
+
+def demolish_data(prefix):
+    for f in glob(os.path.join(prefix, '*')):
+        os.remove(f)
+    os.rmdir(prefix)
+
+
+def create_test_data_sph(prefix):
+    if not os.path.exists(prefix):
+        os.mkdir(prefix)
+    for m in range(1):
+        for t in range(2):
+            for z in range(1):
+                for c in range(1):
+                    fname = f'm{m:02d}t{t:03d}z{z:02d}c{c}.tif'
+                    path = os.path.join(prefix, fname)
+                    if not os.path.exists(path):
+
+                        # make circle
+
+                        X = np.arange(2000)
+                        Y = X
+
+                        X, Y = np.meshgrid(X, Y)
+
+                        mask = ((np.sqrt((X-600)**2 + (Y-1200)**2) > 200) & 
+                                (np.sqrt((X-600)**2 + (Y-1200)**2) < 210)).astype('int32')
+
+                        mask[650:700, 1200:1250] = -100
+                        mask *= -1
+
+                        imwrite(path, mask)
 
 def test_crop():
     shape = (20,20)
@@ -20,28 +53,34 @@ def test_crop():
     assert cropped_arr.shape == (5,5)
     assert cropped_arr.dtype == 'int64'
 
-def _test_crop_functional():
 
-    for fileName in glob.glob('*.tif'):
+def test_find_well(prefix='tests/tmp_sph'):
 
-        im = imread(fileName)
-        im_crop = segment.select_well(im, 410, 410, 3)
-        im_sph = segment.find_spheroid(im_crop, 410, 3)
+    create_test_data_sph(prefix)
 
-        fig, ax = plt.subplots(1,3)
+    vs = read.VirtualStack(prefix)
 
-        ax[0].imshow(im, origin = 'lower', cmap="gray")
-        ax[0].set_title('Raw image')
-        ax[1].imshow(im_crop, origin = 'lower', cmap="gray")
-        ax[1].set_title('Cropped image')
-        ax[2].imshow(im_crop, origin = 'lower', cmap="gray")
-        ax[2].imshow(im_sph, origin = 'lower', alpha = 0.3)
-        ax[2].set_title('Segmented spheroid image')
+    img = vs.get_single_image(m=0, t=0, z = 0, c=0).array
 
-        plt.savefig('test_result.tiff')
+    crop_img = segment.select_well(img, 
+        img, 
+        maskSizeUm = 410, 
+        wellDiameterUm = 410, 
+        muToPx = 1)
 
-    return
+    sph_img = segment.find_spheroid(crop_img,
+        wellDiameterUm = 410,
+        marginDistance = 10,
+        minRegionArea = 100,
+        umToPx = 1)
+
+    assert isinstance(sph_img, np.ndarray)
+    assert np.shape(sph_img) == (410,410)
+
+    demolish_data(prefix)
+
 
 
 if __name__ == "__main__":
     test_crop()
+    test_find_well()

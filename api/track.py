@@ -63,7 +63,7 @@ def get_cell_tracks(vs,
 
 def get_spheroid_properties(vs,
     spheroid_channel:int,
-    fluo_channel:int,
+    fluo_channel = None,
     get_fluo = False,
     verify_seg = False,
     wellSizeMu = 430,
@@ -105,7 +105,6 @@ def get_spheroid_properties(vs,
             if get_fluo:
 
                 img_Fluo = vs.get_single_image(m=m, t=t, c=fluo_channel)
-
 
                 crop_img_Fluo = segment.select_well(img.array, 
                     img_Fluo.array, wellSizeMu, wellSizeMu, muTopx)
