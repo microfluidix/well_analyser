@@ -15,7 +15,7 @@ def get_image_array(vs,
     m:int, 
     fluo_channel:int):
 
-    fnames = f'm{m:02d}*c{fluo_channel}.tif'
+    fnames = f'm{m:02d}t*c{fluo_channel}.tif'
     
     return pims.open(os.path.join(vs.folder, fnames))
 
@@ -121,6 +121,84 @@ def get_spheroid_properties(vs,
             timeFrame['well_center_x'] = xc
             timeFrame['well_center_y'] = yc
             timeFrame['mask_size'] = wellSizeMu*muTopx
+
+            folder = vs.folder
+
+            if not os.path.exists(os.path.join(folder, 'spheroid_data_frame')):
+                os.makedirs(os.path.join(folder, 'spheroid_data_frame'))
+
+            timeFrame.to_csv(os.path.join(os.path.join(folder, 
+                'spheroid_data_frame',
+                str(m) + '_' + str(t))))
+            
+            spheroid_frame = spheroid_frame.append(timeFrame)
+
+            # Verify segmentation
+
+            if verify_seg:
+
+                folder = vs.folder
+
+                if not os.path.exists(os.path.join(folder, 'verify segmentation')):
+                    os.makedirs(os.path.join(folder, 'verify segmentation'))
+
+                verify_segmentation.verifySegmentationBF(crop_img_BF,
+                    sph_img,
+                    os.path.join(folder, 'verify segmentation'),
+                    int(m),
+                    int(t))
+
+        except Exception as e: print(e)
+
+    return spheroid_frame
+
+def get_OT1_properties(vs,
+    OT1_frame:pandas.DataFrame,
+    spheroid_channel:int,
+    fluo_channel = None,
+    verify_seg = False,
+    wellSizeMu = 430,
+    muTopx = 3):
+
+    """
+    
+    Asses the state of OT1 cells wrt the spheroid.
+
+    COMMENT: with meta data we will integrate the above
+    variables implicitely.
+
+    Returns:
+     - pandas.DataFrame
+    
+    """
+
+    spheroid_frame = pandas.DataFrame()
+
+    c1_time_reader = vs.read(t = None, 
+        m = None, 
+        c = spheroid_channel)
+
+    for img in c1_time_reader:
+
+        try:
+
+            print(img.meta)
+            
+            t = img.meta['t']
+            m = img.meta['m']
+
+            (xc, yc) = utilities._get_center(img.array,wellSizeMu,wellSizeMu,muTopx)
+
+            # function to be changed to Andrey's version
+            crop_img_BF = segment.select_well(img.array, img.array, wellSizeMu, wellSizeMu, muTopx)            
+            sph_img = segment.find_spheroid(crop_img_BF, wellSizeMu, muTopx)
+
+            timeFrame = analyse.spheroid_properties(sph_img)
+
+            OT1_frame.loc[(OT1_frame['frame'] == t) & 
+                (OT1_frame['m'] == m), 'well_center_x']
+            
+            
 
             folder = vs.folder
 
