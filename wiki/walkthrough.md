@@ -28,9 +28,6 @@ from api import read
 
 
 ```python
-from api.segment import segment
-from api.segment import verify_segmentation
-from api.analyse import analyse
 from api import track
 ```
 
