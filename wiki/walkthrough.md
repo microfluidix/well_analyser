@@ -41,7 +41,13 @@ import matplotlib.pyplot as plt
 
 ## Analyze image features
 
-After loading the virtual stack object, we analyze successively the spheroid and the T-cell track properties.
+After loading the virtual stack object, we analyze successively the spheroid 
+and the T-cell track properties. The user needs to know the following
+informations:
+
+ - channel order
+ - well size in mu
+ - conversion rate from mu to pixels
 
 
 ```python
