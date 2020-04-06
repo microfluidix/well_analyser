@@ -45,7 +45,7 @@ After loading the virtual stack object, we analyze successively the spheroid and
 
 
 ```python
-save_path = r'/Users/gustaveronteix/Documents/Projets/Projets Code/imges_test_image_analysis/imges'
+save_path = r'/Example/Path/As/String'
 ```
 
 
