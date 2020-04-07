@@ -11,12 +11,13 @@ from api.segment import verify_segmentation
 import api.segment.utilities as utilities
 
 
-def make_tracks(track_frame:pandas.DataFrame):
+def make_tracks(track_frame:pandas.DataFrame,
+    search_range:int):
 
     for m in track_frame['m'].unique():
 
         track_frame.loc[track_frame['m'] == m] = trackpy.link(track_frame[track_frame['m'] == m],
-            search_range = 40)
+            search_range = search_range)
     
     return track_frame
 
@@ -61,7 +62,7 @@ def get_cell_tracks(vs,
 
         track_frame = track_frame.append(well_frame)
 
-    return make_tracks(track_frame)
+    return make_tracks(track_frame, search_range)
 
 def get_spheroid_properties(vs,
     spheroid_channel:int,
