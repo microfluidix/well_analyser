@@ -14,3 +14,4 @@ seaborn
 tox
 trackpy
 sklearn
+click
