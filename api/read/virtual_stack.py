@@ -3,11 +3,12 @@ import re
 import numpy as np
 import os
 from api.core import Well
+from api.read import interface
 from tifffile import imread
 from skimage.transform import downscale_local_mean
 
 
-class VirtualStack:
+class VirtualStack(interface.ReaderInterface):
 
     '''Handle tif exports from NIS'''
 
