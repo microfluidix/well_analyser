@@ -6,7 +6,9 @@ from tifffile import imwrite
 from glob import glob
 
 import pandas
-from api import track
+
+from api.track_ot1 import track_ot1
+from api.track_spheroids import track_spheroids
 from api.segment import segment
 
 
@@ -66,7 +68,13 @@ def test_track_cells(prefix='tests/tmp_cells'):
 
     vs = read.VirtualStack(prefix)
 
-    track_frame = track.get_cell_tracks(vs, fluo_channel = 0)
+    track_frame = track_ot1.get_cell_tracks(vs,
+        fluo_channel = 0,
+        mutopx = 1,
+        search_range = 10,
+        minsize = 10,
+        minmass = 10,
+        percentile = 50.)
 
     print(track_frame['m'].unique())
 
@@ -87,12 +95,12 @@ def test_find_well(prefix='tests/tmp_sph'):
         img, 
         maskSizeUm = 410, 
         wellDiameterUm = 410, 
-        muToPx = 1)
+        mutopx = 1)
 
     sph_img = segment.find_spheroid(crop_img,
         wellDiameterUm = 410,
         marginDistance = 10,
-        umToPx = 1)
+        mutopx = 1)
 
     assert isinstance(sph_img, np.ndarray)
     assert np.shape(sph_img) == (410,410)
@@ -106,10 +114,10 @@ def test_spheroid_props(prefix='tests/tmp_sph'):
 
     vs = read.VirtualStack(prefix)
 
-    track_frame = track.get_spheroid_properties(vs, 
+    track_frame = track_spheroids.get_spheroid_properties(vs, 
         spheroid_channel = 0,
         wellSizeMu = 410,
-        muTopx = 1)
+        mutopx = 1)
 
     assert isinstance(track_frame, pandas.DataFrame)
 

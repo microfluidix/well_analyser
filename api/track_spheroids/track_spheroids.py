@@ -17,7 +17,7 @@ def get_spheroid_properties(vs,
     get_fluo = False,
     verify_seg = False,
     wellSizeMu = 430,
-    mutopxs = 3):
+    mutopx = 3):
 
     """
     

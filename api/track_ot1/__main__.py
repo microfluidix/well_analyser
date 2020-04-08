@@ -18,13 +18,13 @@ from api import read
 )
 @click.option(
     '--out_dir', '-o',
-    default='image_path',
+    default='.',
     show_default=True,
     help='Where to save the resulting csv files'
 )
 @click.option(
     '--out_fname', '-fn',
-    default='spheroid_frame',
+    default='ot1_frame',
     show_default=True,
     help='Name of output csv file'
 )
