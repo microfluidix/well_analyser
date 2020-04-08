@@ -54,14 +54,14 @@ from api import read
     type=bool,
     default=False,
     show_default=True,
-    help='Where to save the resulting csv files'
+    help='Create verification images of segmentation'
 )
 @click.option(
     '--wellSizeMu', '-ws',
     default=430,
     type=int,
     show_default=True,
-    help='Where to save the resulting csv files'
+    help='Well size in micrometers'
 )
 
 def main(image_path:str='',
@@ -78,11 +78,11 @@ def main(image_path:str='',
 
     data_frame = track_spheroids.get_spheroid_properties(vs,
                         spheroid_channel = channel,
-                        fluo_channel = None,
-                        get_fluo = False,
-                        verify_seg = False,
-                        wellSizeMu = 430,
-                        muTopx = 3)
+                        fluo_channel = fluo_channel,
+                        get_fluo = get_fluo,
+                        verify_seg = verify_seg,
+                        wellSizeMu = wellSizeMu,
+                        muTopx = muTopx)
 
 
     data_frame.to_csv(os.path.join(out_dir, out_fname + '.csv'))
