@@ -1,5 +1,10 @@
 import numpy as np
 from skimage.transform import downscale_local_mean
+import logging
+import matplotlib.pyplot as plt
+
+logging.getLogger('matplotlib').setLevel(logging.WARNING)
+
 
 class Well:
 
@@ -36,10 +41,6 @@ class Well:
 
     def __repr__(self,):
         try:
-            import matplotlib.pyplot as plt
-            import matplotlib as ml
-            ml.logging.basicConfig(level=ml.logging.INFO)
-
             if self.array.ndim == 2:
                 plt.imshow(self.array, cmap='gray')
                 # plt.title(self.meta)
