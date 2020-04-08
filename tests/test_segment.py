@@ -66,13 +66,13 @@ def test_find_well(prefix='tests/tmp_sph'):
         img, 
         maskSizeUm = 410, 
         wellDiameterUm = 410, 
-        muToPx = 1)
+        mutopx = 1)
 
     sph_img = segment.find_spheroid(crop_img,
         wellDiameterUm = 410,
         marginDistance = 10,
         minRegionArea = 100,
-        umToPx = 1)
+        mutopx = 1)
 
     assert isinstance(sph_img, np.ndarray)
     assert np.shape(sph_img) == (410,410)
