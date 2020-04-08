@@ -15,7 +15,7 @@ def select_well(imgToAnalyze:np.ndarray,
     imgToCrop:np.ndarray,
     maskSizeUm:int,
     wellDiameterUm:int,
-    muToPx:float):
+    mutopx:float):
 
     """
     
@@ -29,7 +29,7 @@ def select_well(imgToAnalyze:np.ndarray,
     boolMask = find_well(imgToAnalyze,
         maskSizeUm,
         wellDiameterUm,
-        muToPx)
+        mutopx)
 
     return crop(imgToCrop, boolMask)
 
@@ -58,7 +58,7 @@ def crop(imgToCrop:np.ndarray,
 def find_well(imgToAnalyze:np.ndarray,
     maskSizeUm:int,
     wellDiameterUm:int,
-    muToPx:float):
+    mutopx:float):
 
     """
     
@@ -69,9 +69,9 @@ def find_well(imgToAnalyze:np.ndarray,
 
     assert len(imgToAnalyze.shape) == 2
 
-    (xc, yc) = utilities._get_center(imgToAnalyze,maskSizeUm,wellDiameterUm,muToPx)
+    (xc, yc) = utilities._get_center(imgToAnalyze,maskSizeUm,wellDiameterUm,mutopx)
 
-    cropDist = maskSizeUm*muToPx
+    cropDist = maskSizeUm*mutopx
 
     startx = max(xc-(cropDist//2), 0)
     starty = max(yc-(cropDist//2), 0)
@@ -84,7 +84,7 @@ def find_well(imgToAnalyze:np.ndarray,
 
 def find_spheroid(imCropped:np.ndarray, 
     wellDiameterUm:int, 
-    umToPx:float, 
+    mutopx:float, 
     marginDistance = 100, 
     fraction = 2.8,
     minRegionArea = 10000, 
@@ -106,7 +106,7 @@ def find_spheroid(imCropped:np.ndarray,
     result2 = ndimage.sobel(imCropped, 0)
     
     mask = utilities._make_disk_mask(wellDiameterUm, wellDiameterUm-marginDistance,
-        umToPx)
+        mutopx)
 
     a, b = np.shape(result1)
 

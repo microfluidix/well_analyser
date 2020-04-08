@@ -29,7 +29,7 @@ from api import read
     help='Name of output csv file'
 )
 @click.option(
-    '--muTopx', '-mu', 
+    '--mutopx', '-mu', 
     type=int, 
     default=3, 
     show_default=True, 
@@ -68,7 +68,7 @@ def main(image_path:str='',
     channel:int=1, 
     out_dir:str='',
     out_fname:str='',
-    muTopx:int=3,
+    mutopx:int=3,
     fluo_channel:int=2,
     get_fluo:bool=False,
     verify_seg:bool=True,
@@ -82,7 +82,7 @@ def main(image_path:str='',
                         get_fluo = get_fluo,
                         verify_seg = verify_seg,
                         wellSizeMu = wellSizeMu,
-                        muTopx = muTopx)
+                        mutopx = mutopx)
 
 
     data_frame.to_csv(os.path.join(out_dir, out_fname + '.csv'))

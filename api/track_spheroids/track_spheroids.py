@@ -17,7 +17,7 @@ def get_spheroid_properties(vs,
     get_fluo = False,
     verify_seg = False,
     wellSizeMu = 430,
-    muTopx = 3):
+    mutopxs = 3):
 
     """
     
@@ -46,18 +46,18 @@ def get_spheroid_properties(vs,
             t = img.meta['t']
             m = img.meta['m']
 
-            (xc, yc) = utilities._get_center(img.array,wellSizeMu,wellSizeMu,muTopx)
+            (xc, yc) = utilities._get_center(img.array,wellSizeMu,wellSizeMu,mutopx)
 
             # function to be changed to Andrey's version
-            crop_img_BF = segment.select_well(img.array, img.array, wellSizeMu, wellSizeMu, muTopx)            
-            sph_img = segment.find_spheroid(crop_img_BF, wellSizeMu, muTopx)
+            crop_img_BF = segment.select_well(img.array, img.array, wellSizeMu, wellSizeMu, mutopx)            
+            sph_img = segment.find_spheroid(crop_img_BF, wellSizeMu, mutopx)
 
             if get_fluo:
 
                 img_Fluo = vs.get_single_image(m=m, t=t, c=fluo_channel)
 
                 crop_img_Fluo = segment.select_well(img.array, 
-                    img_Fluo.array, wellSizeMu, wellSizeMu, muTopx)
+                    img_Fluo.array, wellSizeMu, wellSizeMu, mutopx)
 
                 timeFrame = analyse.spheroid_properties(sph_img, crop_img_Fluo)
             
@@ -70,7 +70,7 @@ def get_spheroid_properties(vs,
             timeFrame['m'] = int(m)
             timeFrame['well_center_x'] = xc
             timeFrame['well_center_y'] = yc
-            timeFrame['mask_size'] = wellSizeMu*muTopx
+            timeFrame['mask_size'] = wellSizeMu*mutopx
 
             folder = vs.folder
 

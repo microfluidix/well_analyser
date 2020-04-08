@@ -12,7 +12,7 @@ from skimage.measure import label, regionprops
 
 def _make_circ_mask(maskSize:int,
     wellSize:int,
-    muToPx:float):
+    mutopx:float):
 
     """
 
@@ -23,15 +23,15 @@ def _make_circ_mask(maskSize:int,
 
     """
 
-    cropDist = maskSize*muToPx
+    cropDist = maskSize*mutopx
 
     X = np.arange(cropDist)
     Y = X
 
     X, Y = np.meshgrid(X, Y)
 
-    mask = ((np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) > (wellSize*muToPx)//2 - 10*muToPx) &
-            (np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) < (wellSize*muToPx)//2 + 10*muToPx))
+    mask = ((np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) > (wellSize*mutopx)//2 - 10*mutopx) &
+            (np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) < (wellSize*mutopx)//2 + 10*mutopx))
 
     return mask.astype(np.int)
 
@@ -39,7 +39,7 @@ def _make_circ_mask(maskSize:int,
 def _get_center(imgToAnalyze:np.ndarray, 
     maskSize:int, 
     wellSize:int,
-    muToPx:float):
+    mutopx:float):
 
     """
 
@@ -50,7 +50,7 @@ def _get_center(imgToAnalyze:np.ndarray,
 
     """
 
-    mask = _make_circ_mask(maskSize,wellSize,muToPx)
+    mask = _make_circ_mask(maskSize,wellSize,mutopx)
 
     conv = cv2.filter2D(imgToAnalyze, cv2.CV_32F, mask)
 
@@ -59,7 +59,7 @@ def _get_center(imgToAnalyze:np.ndarray,
 
 def _make_disk_mask(maskSize:int, 
     diskSize:int, 
-    umToPx:float):
+    mutopx:float):
 
     """
 
@@ -70,12 +70,12 @@ def _make_disk_mask(maskSize:int,
 
     """
 
-    cropDist = int(maskSize*umToPx)
+    cropDist = int(maskSize*mutopx)
 
     X = np.arange(cropDist)
     Y = X
     X, Y = np.meshgrid(X, Y)
 
-    mask = (np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) < (diskSize*umToPx)//2)
+    mask = (np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) < (diskSize*mutopx)//2)
 
     return mask.astype(np.int)
