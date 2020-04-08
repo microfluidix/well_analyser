@@ -33,10 +33,13 @@ class Well:
         arr = downscale_local_mean(self.array, tuple(factors))
         return Well(arr, meta = {'binning': factor, **self.meta})
 
-    
+
     def __repr__(self,):
         try:
             import matplotlib.pyplot as plt
+            import matplotlib as ml
+            ml.logging.basicConfig(level=ml.logging.INFO)
+
             if self.array.ndim == 2:
                 plt.imshow(self.array, cmap='gray')
                 # plt.title(self.meta)
