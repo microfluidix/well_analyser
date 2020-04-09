@@ -1,18 +1,19 @@
 import os
 import sys
-import numpy as np
 
-import pims
-from scipy.ndimage import gaussian_filter
-import matplotlib.pyplot as plt
 import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+import pims
 from numpy import unravel_index
-from scipy import ndimage, misc
-from skimage.measure import label, regionprops
+from scipy import misc
+from scipy import ndimage
+from scipy.ndimage import gaussian_filter
+from skimage.measure import label
+from skimage.measure import regionprops
 
-def _make_circ_mask(maskSize:int,
-    wellSize:int,
-    muToPx:float):
+
+def _make_circ_mask(maskSize: int, wellSize: int, muToPx: float):
 
     """
 
@@ -23,23 +24,25 @@ def _make_circ_mask(maskSize:int,
 
     """
 
-    cropDist = maskSize*muToPx
+    cropDist = maskSize * muToPx
 
     X = np.arange(cropDist)
     Y = X
 
     X, Y = np.meshgrid(X, Y)
 
-    mask = ((np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) > (wellSize*muToPx)//2 - 10*muToPx) &
-            (np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) < (wellSize*muToPx)//2 + 10*muToPx))
+    mask = (
+        np.sqrt((X - cropDist // 2) ** 2 + (Y - cropDist // 2) ** 2)
+        > (wellSize * muToPx) // 2 - 10 * muToPx
+    ) & (
+        np.sqrt((X - cropDist // 2) ** 2 + (Y - cropDist // 2) ** 2)
+        < (wellSize * muToPx) // 2 + 10 * muToPx
+    )
 
     return mask.astype(np.int)
 
 
-def _get_center(imgToAnalyze:np.ndarray, 
-    maskSize:int, 
-    wellSize:int,
-    muToPx:float):
+def _get_center(imgToAnalyze: np.ndarray, maskSize: int, wellSize: int, muToPx: float):
 
     """
 
@@ -50,16 +53,14 @@ def _get_center(imgToAnalyze:np.ndarray,
 
     """
 
-    mask = _make_circ_mask(maskSize,wellSize,muToPx)
+    mask = _make_circ_mask(maskSize, wellSize, muToPx)
 
     conv = cv2.filter2D(imgToAnalyze, cv2.CV_32F, mask)
 
     return unravel_index(conv.argmin(), conv.shape)
 
 
-def _make_disk_mask(maskSize:int, 
-    diskSize:int, 
-    umToPx:float):
+def _make_disk_mask(maskSize: int, diskSize: int, umToPx: float):
 
     """
 
@@ -70,12 +71,15 @@ def _make_disk_mask(maskSize:int,
 
     """
 
-    cropDist = int(maskSize*umToPx)
+    cropDist = int(maskSize * umToPx)
 
     X = np.arange(cropDist)
     Y = X
     X, Y = np.meshgrid(X, Y)
 
-    mask = (np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) < (diskSize*umToPx)//2)
+    mask = (
+        np.sqrt((X - cropDist // 2) ** 2 + (Y - cropDist // 2) ** 2)
+        < (diskSize * umToPx) // 2
+    )
 
     return mask.astype(np.int)

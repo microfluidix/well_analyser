@@ -79,7 +79,7 @@ vs
 
 
 
-    Virtial Stack instance. 
+    Virtial Stack instance.
     Found 864 files in Z:/Andrey/data/Salome/20200228/NIS_export/. Ranges: {'t': {'min': 2, 'max': 33}, 'z': {'min': 1, 'max': 9}, 'c': {'min': 1, 'max': 3}}
 
 
@@ -188,7 +188,7 @@ for v in vs.read(c=3, z=5, t=None):
     (7103, 10599) 10676.980981367302 {'c': 3, 'z': 5, 't': 31, 'path': 't31z5c3.tif', 'prefix': 'Z:/Andrey/data/Salome/20200228/NIS_export/'}
     (7103, 10599) 10527.156655528546 {'c': 3, 'z': 5, 't': 32, 'path': 't32z5c3.tif', 'prefix': 'Z:/Andrey/data/Salome/20200228/NIS_export/'}
     (7103, 10599) 10447.355351606184 {'c': 3, 'z': 5, 't': 33, 'path': 't33z5c3.tif', 'prefix': 'Z:/Andrey/data/Salome/20200228/NIS_export/'}
-    
+
 
 
 ```python
@@ -221,9 +221,9 @@ Example:
     ['FITC', 'DaFiTr']
 >>> single_image = r.get_single_image(c=0, m=0)
 >>> single_image
-    array (2044, 2048), {'x_um': -26555.7, 'y_um': -2942.4, 'z_um': 3691.9, 
-    't_ms': 1446.9611667967401, 'colors': [(0.0, 1.0, 0.0), (1.0, 1.0, 1.0)], 
-    'mpp': 0.325, 'max_value': 65535, 'x': 0, 'y': 0, 'c': 0, 'm': 0, 
+    array (2044, 2048), {'x_um': -26555.7, 'y_um': -2942.4, 'z_um': 3691.9,
+    't_ms': 1446.9611667967401, 'colors': [(0.0, 1.0, 0.0), (1.0, 1.0, 1.0)],
+    'mpp': 0.325, 'max_value': 65535, 'x': 0, 'y': 0, 'c': 0, 'm': 0,
     'axes': ['y', 'x'], 'coords': {'m': 0, 'c': 0}}
 >>> single_image.array
     array([[173, 155, 183, ..., 126, 131, 125],
@@ -250,7 +250,7 @@ Example:
     (205, 205) 11 1
 >>> m
     array (205, 205),
-    {'binning': 10, 'x_um': -15416.2, 'y_um': 5327.700000000001, 
+    {'binning': 10, 'x_um': -15416.2, 'y_um': 5327.700000000001,
     'z_um': 3691.9, 't_ms': 23359.35130351549,
     'colors': [(0.0, 1.0, 0.0), (1.0, 1.0, 1.0)],
     'mpp': 0.325, 'max_value': 65535,
@@ -287,8 +287,3 @@ BF_img = vs.get_single_image(t=2,z=1,c=1)
 BF_crop = segment.select_well(im, wellSize, cropSize, muTopx)
 BF_sph = segment.find_spheroid(BF_crop, wellSize, muTopx)
 ```
-
-
-
-
-

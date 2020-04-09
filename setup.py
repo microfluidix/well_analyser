@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
 
 setup(
     name="image_analysis_toolbox",
@@ -21,7 +21,7 @@ setup(
         "tqdm",
         "pandas",
         "seaborn",
-        "trackpy"
+        "trackpy",
     ],
     python_requires=">=3.8",
     packages=find_packages(),
