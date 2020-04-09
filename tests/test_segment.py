@@ -84,4 +84,4 @@ def test_find_well(prefix='tests/tmp_sph'):
 
 
 if __name__ == "__main__":
-    _test_crop()
+    test_crop()
