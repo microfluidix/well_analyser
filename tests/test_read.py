@@ -1,8 +1,10 @@
 import os
-import numpy as np
-from api import read, Well
-from tifffile import imwrite
 from glob import glob
+
+import numpy as np
+from api import read
+from api import Well
+from tifffile import imwrite
 
 
 def create_test_data(prefix):
@@ -20,12 +22,12 @@ def create_test_data(prefix):
 
 
 def demolish_data(prefix):
-    for f in glob(os.path.join(prefix, '*')):
+    for f in glob(os.path.join(prefix, "*")):
         os.remove(f)
     os.rmdir(prefix)
 
 
-def test_virtual_stack(prefix='tests/tmp'):
+def test_virtual_stack(prefix="tests/tmp"):
 
     create_test_data(prefix)
 
@@ -58,7 +60,7 @@ def test_virtual_stack(prefix='tests/tmp'):
 
     assert Well.stack(stack).array.shape == (11, 8, 8)
 
-    assert stack[0].bin(2).array.shape == (4,4)
+    assert stack[0].bin(2).array.shape == (4, 4)
 
     demolish_data(prefix)
 

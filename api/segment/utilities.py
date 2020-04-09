@@ -1,14 +1,16 @@
 import os
 import sys
-import numpy as np
 
-import pims
-from scipy.ndimage import gaussian_filter
-import matplotlib.pyplot as plt
 import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+import pims
 from numpy import unravel_index
-from scipy import ndimage, misc
-from skimage.measure import label, regionprops
+from scipy import misc
+from scipy import ndimage
+from scipy.ndimage import gaussian_filter
+from skimage.measure import label
+from skimage.measure import regionprops
 
 def _make_circ_mask(maskSize:int,
     wellSize:int,

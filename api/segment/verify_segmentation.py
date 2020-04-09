@@ -1,6 +1,8 @@
 import os
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 def verifySegmentationBF(BFimage:np.ndarray, 
     rRegion:np.ndarray, 
@@ -16,7 +18,7 @@ def verifySegmentationBF(BFimage:np.ndarray,
 
     print(os.path.join(savePath, fname))
 
-    fig, _ = plt.subplots(1,1, figsize = (10,10))
+    fig, _ = plt.subplots(1, 1, figsize=(10, 10))
 
     plt.imshow(BFimage, cmap='gray', origin = 'lower')
     plt.imshow(rRegion, alpha = 0.1, origin = 'lower')

@@ -40,18 +40,20 @@ def create_test_data_sph(prefix):
 
                         imwrite(path, mask)
 
+
 def test_crop():
-    shape = (20,20)
-    arr = np.zeros(shape, dtype = 'int64')
+    shape = (20, 20)
+    arr = np.zeros(shape, dtype="int64")
     bool_arr = np.zeros(shape)
 
-    bool_arr[1:6,11:16] = 1
+    bool_arr[1:6, 11:16] = 1
     bool_arr = bool_arr.astype(bool)
 
     cropped_arr = segment.crop(arr, bool_arr)
 
-    assert cropped_arr.shape == (5,5)
-    assert cropped_arr.dtype == 'int64'
+    assert cropped_arr.shape == (5, 5)
+    assert cropped_arr.dtype == "int64"
+
 
 
 def test_find_well(prefix='tests/tmp_sph'):
@@ -82,5 +84,4 @@ def test_find_well(prefix='tests/tmp_sph'):
 
 
 if __name__ == "__main__":
-    test_crop()
-    test_find_well()
+    _test_crop()

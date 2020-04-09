@@ -15,3 +15,4 @@ tox
 trackpy
 sklearn
 click
+pre-commit
