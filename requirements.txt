@@ -12,3 +12,4 @@ tqdm
 pandas
 seaborn
 tox
+pre-commit
