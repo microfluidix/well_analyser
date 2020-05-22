@@ -170,7 +170,7 @@ def get_cell_tracks_state(vs,
 
         except Exception as e:
 
-            error[m][t] = e.message
+            error[m][t] = e
 
     with open(os.path.join(folder, 'error_message.csv','wb')) as f:
         w = csv.writer(f)
