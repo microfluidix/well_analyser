@@ -5,6 +5,9 @@ import trackpy
 import pims
 import pandas
 from tqdm import tqdm
+import csv
+
+import collections
 
 from api.segment import segment
 from api.analyse import analyse
@@ -96,6 +99,9 @@ def get_cell_tracks_state(vs,
     min_size = (2*mutopx*minsize//2)+1
     track_frame = pandas.DataFrame()
 
+    error = collections.defaultdict(dict)
+    folder = vs.folder
+
     c2_time_reader = vs.read(t = None, 
         m = None, 
         c = fluo_channel)
@@ -162,10 +168,12 @@ def get_cell_tracks_state(vs,
 
             track_frame = track_frame.append(well_frame)
 
-        except:
+        except Exception as e:
 
-            folder = vs.folder
+            error[m][t] = e.message
 
-
+    with open(os.path.join(folder, 'error_message.csv','wb')) as f:
+        w = csv.writer(f)
+        w.writerows(error.items())
 
     return make_tracks(track_frame, search_range)
