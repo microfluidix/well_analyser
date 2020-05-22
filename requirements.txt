@@ -10,7 +10,6 @@ pytest-cov
 tifffile
 tqdm
 pandas
-seaborn
 tox
 trackpy
 sklearn

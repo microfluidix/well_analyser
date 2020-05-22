@@ -20,8 +20,9 @@ setup(
         "tifffile",
         "tqdm",
         "pandas",
-        "seaborn",
         "trackpy",
+        "click",
+        "pre-commit"
     ],
     python_requires=">=3.8",
     packages=find_packages(),

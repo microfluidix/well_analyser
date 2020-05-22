@@ -9,13 +9,23 @@ from api import read
 
 @click.command()
 @click.argument('image_path', nargs=1)
+
 @click.option(
-    '--channel', '-c', 
+    '--channel_fluo', '-cfl', 
     type=int, 
     default=1, 
     show_default=True, 
     help='Relevant channel for analysis'
 )
+
+@click.option(
+    '--channel_BF', '-cbf', 
+    type=int, 
+    default=1, 
+    show_default=True, 
+    help='BF channel'
+)
+
 @click.option(
     '--out_dir', '-o',
     default='.',
@@ -64,27 +74,82 @@ from api import read
     help='Percentile below which local maxima will be ignored'
 )
 
+@click.option(
+    '--state', '-s',
+    type=bool,
+    default=True,
+    show_default=True,
+    help='Get position of OT-1 relative to the spheroid'
+)
+
+@click.option(
+    '--verify_seg', '-vseg',
+    type=bool,
+    default=True,
+    show_default=True,
+    help='Verify the segmentation results'
+)
+
+@click.option(
+    '--radius', '-r',
+    type=int,
+    default=10,
+    show_default=True,
+    help='Error margin (in px) for the OT-1 state attribution.'
+)
+
+@click.option(
+    '--wellSizeMu', '-ws',
+    type=int,
+    default=430,
+    show_default=True,
+    help='Default well size in mu.'
+)
+
 def main(image_path:str,
-    channel:int, 
+    channel_fluo:int,
+    channel_BF:int, 
     out_dir:str,
     out_fname:str,
     mutopx:int,
     search_range:int,
     minsize:int,
     minmass:int,
-    percentile:float):
+    percentile:float,
+    state:bool,
+    verify_seg:bool,
+    radius:bool,
+    wellSizeMu:int):
 
     vs = read.VirtualStack(image_path)
 
-    data_frame = track_ot1.get_cell_tracks(vs,
-                        fluo_channel = channel,
-                        mutopx = mutopx,
-                        search_range = search_range,
-                        minsize = minsize,
-                        minmass = minmass,
-                        percentile = percentile)
+    if not state:
 
-    data_frame.to_csv(os.path.join(out_dir, out_fname + '.csv'))
+        data_frame = track_ot1.get_cell_tracks(vs,
+                            fluo_channel = channel_fluo,
+                            mutopx = mutopx,
+                            search_range = search_range,
+                            minsize = minsize,
+                            minmass = minmass,
+                            percentile = percentile)
+
+        data_frame.to_csv(os.path.join(out_dir, out_fname + '.csv'))
+
+    else:
+
+        data_frame = track_ot1.get_cell_tracks_state(vs,
+                            fluo_channel = channel_fluo,
+                            fluo_BF = channel_BF,
+                            mutopx = mutopx,
+                            search_range = search_range,
+                            minsize = minsize,
+                            minmass = minmass,
+                            percentile = percentile,
+                            verify_seg = verify_seg,
+                            radius = radius,
+                            wellSizeMu = wellSizeMu)
+
+        data_frame.to_csv(os.path.join(out_dir, out_fname + '.csv'))
 
     return True
 

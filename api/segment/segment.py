@@ -141,7 +141,7 @@ def find_spheroid(imCropped:np.ndarray,
             temp[imLabel == region.label] = 0
             # region given same value as sph. border
 
-        if region.eccentricity > 0.8:
+        if region.eccentricity > 0.7:
             # check it is inside or outside
 
             temp[imLabel == region.label] = 0
