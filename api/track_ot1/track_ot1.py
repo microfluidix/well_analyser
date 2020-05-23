@@ -100,7 +100,7 @@ def get_cell_tracks_state(vs,
     track_frame = pandas.DataFrame()
 
     error = collections.defaultdict(dict)
-    folder = vs.folder
+    folder = vs.path
 
     c2_time_reader = vs.read(t = None, 
         m = None, 
@@ -149,7 +149,7 @@ def get_cell_tracks_state(vs,
 
             if verify_seg:
 
-                folder = vs.folder
+                folder = vs.path
 
                 if not os.path.exists(os.path.join(folder, 'verify segmentation OT1')):
                     os.makedirs(os.path.join(folder, 'verify segmentation OT1'))

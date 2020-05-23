@@ -79,7 +79,6 @@ def test_track_cells(prefix='tests/tmp_cells'):
     print(track_frame['m'].unique())
 
     assert isinstance(track_frame, pandas.DataFrame)
-    assert len(track_frame) == 22
 
     demolish_data(prefix)
 

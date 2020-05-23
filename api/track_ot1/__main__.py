@@ -13,13 +13,13 @@ from api import read
 @click.option(
     '--channel_fluo', '-cfl', 
     type=int, 
-    default=1, 
+    default=0, 
     show_default=True, 
     help='Relevant channel for analysis'
 )
 
 @click.option(
-    '--channel_BF', '-cbf', 
+    '--channel_bf', '-cbf', 
     type=int, 
     default=1, 
     show_default=True, 
@@ -99,7 +99,7 @@ from api import read
 )
 
 @click.option(
-    '--wellSizeMu', '-ws',
+    '--wellsizemu', '-ws',
     type=int,
     default=430,
     show_default=True,
@@ -107,21 +107,22 @@ from api import read
 )
 
 def main(image_path:str,
-    channel_fluo:int,
-    channel_BF:int, 
-    out_dir:str,
-    out_fname:str,
-    mutopx:int,
-    search_range:int,
-    minsize:int,
-    minmass:int,
-    percentile:float,
-    state:bool,
-    verify_seg:bool,
-    radius:bool,
-    wellSizeMu:int):
+    channel_fluo:int = 0,
+    channel_bf:int = 1, 
+    out_dir:str = '.',
+    out_fname:str = 'ot1_frame',
+    mutopx:int = 3,
+    search_range:int = 40,
+    minsize:int = 10,
+    minmass:int = 1000,
+    percentile:float = 90,
+    state:bool = True,
+    verify_seg:bool = True,
+    radius:int = 10,
+    wellsizemu:int = 430):
 
-    vs = read.VirtualStack(image_path)
+    #vs = read.VirtualStack(image_path)
+    vs = read.nd2(image_path)
 
     if not state:
 
@@ -139,7 +140,7 @@ def main(image_path:str,
 
         data_frame = track_ot1.get_cell_tracks_state(vs,
                             fluo_channel = channel_fluo,
-                            fluo_BF = channel_BF,
+                            fluo_BF = channel_bf,
                             mutopx = mutopx,
                             search_range = search_range,
                             minsize = minsize,
@@ -147,7 +148,7 @@ def main(image_path:str,
                             percentile = percentile,
                             verify_seg = verify_seg,
                             radius = radius,
-                            wellSizeMu = wellSizeMu)
+                            wellSizeMu = wellsizemu)
 
         data_frame.to_csv(os.path.join(out_dir, out_fname + '.csv'))
 

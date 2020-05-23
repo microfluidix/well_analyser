@@ -112,8 +112,6 @@ def find_spheroid(imCropped:np.ndarray,
     mask = utilities._make_disk_mask(wellDiameterUm, wellDiameterUm-marginDistance,
         mutopx)
 
-    a, b = np.shape(result1)
-
     sobelMasked = np.multiply(mask, np.sqrt(result1 ** 2 + result2 ** 2))
     toThresh = gaussian_filter(sobelMasked, sigma=5)
     

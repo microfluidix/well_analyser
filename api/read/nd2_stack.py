@@ -143,9 +143,9 @@ class ND2Reader(ReaderInterface):
         assert all(
             [k in self.ranges] for k in kwargs
         ), f"Must provide all the coordiantes from {self.ranges}, got {kwargs}"
-        assert all(
-            [0 <= kwargs[k] < self.ranges[k] for k in kwargs]
-        ), f"{kwargs} is out of range. Max values: {self.ranges}"
+        #assert all(
+        #    [0 <= kwargs[k] < self.ranges[k] for k in kwargs]
+        #), f"{kwargs} is out of range. Max values: {self.ranges}"
 
     def __getitem__(self, value):
         logger.debug(f"__getitem__({value})")
