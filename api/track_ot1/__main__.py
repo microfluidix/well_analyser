@@ -121,8 +121,13 @@ def main(image_path:str,
     radius:int = 10,
     wellsizemu:int = 430):
 
-    #vs = read.VirtualStack(image_path)
-    vs = read.nd2(image_path)
+    if '.nd2' in image_path:
+
+        vs = read.nd2(image_path)
+
+    else:
+
+        vs = read.VirtualStack(image_path)
 
     if not state:
 

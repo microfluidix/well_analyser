@@ -83,6 +83,7 @@ class ND2Reader(ReaderInterface):
     def __init__(self, path: str):
         assert os.path.exists(path), f"path {path} doesn't exist"
         self.path = path
+        self.folder = os.path.dirname(path)
         self.reader = reader(path)
         self.metadata = (met := self.reader.metadata)
         self.ranges = self.reader.sizes
