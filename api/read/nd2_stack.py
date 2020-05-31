@@ -10,11 +10,28 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-EXAMPLE = """
+def wrap(pre, post):
+	""" Wrapper """
+	def decorate(func):
+		""" Decorator """
+		def call(*args, **kwargs):
+			""" Actual wrapping """
+			pre(func)
+			result = func(*args, **kwargs)
+			post(func)
+			return result
+		return call
+	return decorate
 
-"""
+def entering(func):
+	""" Pre function logging """
+	logger.debug("Entered %s", func.__name__)
 
+def exiting(func):
+	""" Post function logging """
+	logger.debug("Exited  %s", func.__name__)
 
+@wrap(entering, exiting)
 class ND2Reader(ReaderInterface):
 
     """
