@@ -100,7 +100,7 @@ def get_cell_tracks_state(vs,
     track_frame = pandas.DataFrame()
 
     error = collections.defaultdict(dict)
-    folder = vs.path
+    folder = vs.folder
 
     c2_time_reader = vs.read(t = None, 
         m = None, 

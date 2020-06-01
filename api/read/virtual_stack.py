@@ -8,33 +8,7 @@ from api.read import interface
 from skimage.transform import downscale_local_mean
 from tifffile import imread
 
-import logging
 
-def wrap(pre, post):
-	""" Wrapper """
-	def decorate(func):
-		""" Decorator """
-		def call(*args, **kwargs):
-			""" Actual wrapping """
-			pre(func)
-			result = func(*args, **kwargs)
-			post(func)
-			return result
-		return call
-	return decorate
-
-def entering(func):
-	""" Pre function logging """
-    logger = logging.getLogger("baker_logger")
-	logger.debug("Entered %s", func.__name__)
-
-def exiting(func):
-	""" Post function logging """
-    logger = logging.getLogger("baker_logger")
-	logger.debug("Exited  %s", func.__name__)
-
-
-@wrap(entering, exiting)
 class VirtualStack(interface.ReaderInterface):
 
     """Handle tif exports from NIS"""
