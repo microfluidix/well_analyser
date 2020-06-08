@@ -22,7 +22,8 @@ setup(
         "pandas",
         "trackpy",
         "click",
-        "pre-commit"
+        "pre-commit",
+        "matplotlib-scalebar"
     ],
     python_requires=">=3.8",
     packages=find_packages(),

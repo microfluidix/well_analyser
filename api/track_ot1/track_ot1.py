@@ -99,7 +99,6 @@ def get_cell_tracks_state(vs,
     min_size = (2*mutopx*minsize//2)+1
     track_frame = pandas.DataFrame()
 
-    error = collections.defaultdict(dict)
     folder = vs.folder
 
     c2_time_reader = vs.read(t = None, 
@@ -111,7 +110,7 @@ def get_cell_tracks_state(vs,
         t = img.meta['t']
         m = img.meta['m']
 
-        try:
+        if True:
 
             img_BF = vs.get_single_image(m=m, t=t, c=fluo_BF)
 
@@ -143,19 +142,34 @@ def get_cell_tracks_state(vs,
                 minmass=minmass,
                 percentile = percentile)
 
+            well_frame['x'] += min_size/2
+            well_frame['y'] += min_size/2
+
             well_frame = OT1_status.get_state(well_frame,
                                 radius,
                                 sph_img)
 
             if verify_seg:
 
-                folder = vs.path
-
                 if not os.path.exists(os.path.join(folder, 'verify segmentation OT1')):
                     os.makedirs(os.path.join(folder, 'verify segmentation OT1'))
 
+                folder = os.path.join(vs.folder, 'verify segmentation OT1')
+
                 verify_segmentation.verify_OT1_state(crop_img_BF,
+                                                    crop_img_fluo,
                                                     well_frame,
+                                                    folder,
+                                                    m,
+                                                    t)
+
+                if not os.path.exists(os.path.join(folder, 'Spheroid Region Detection')):
+                    os.makedirs(os.path.join(folder, 'Spheroid Region Detection'))
+
+                folder = os.path.join(vs.folder, 'Spheroid Region Detection')
+
+                verify_segmentation.verifySegmentationBF(crop_img_BF,
+                                                    sph_img,
                                                     folder,
                                                     m,
                                                     t)
@@ -168,12 +182,12 @@ def get_cell_tracks_state(vs,
 
             track_frame = track_frame.append(well_frame)
 
-        except Exception as e:
+        #except Exception as e:
 
-            error[m][t] = e
+        #    error[m][t] = e
 
-    with open(os.path.join(folder, 'error_message.csv','wb')) as f:
-        w = csv.writer(f)
-        w.writerows(error.items())
+    #with open(os.path.join(folder, 'error_message.csv','wb')) as f:
+    #    w = csv.writer(f)
+    #    w.writerows(error.items())
 
     return make_tracks(track_frame, search_range)

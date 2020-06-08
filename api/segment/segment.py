@@ -72,9 +72,9 @@ def find_well(imgToAnalyze:np.ndarray,
 
     assert len(imgToAnalyze.shape) == 2
 
-    (xc, yc) = utilities._get_center(imgToAnalyze, maskSizeUm, wellDiameterUm, muToPx)
+    (xc, yc) = utilities._get_center(imgToAnalyze, maskSizeUm, wellDiameterUm, mutopx)
 
-    cropDist = maskSizeUm * muToPx
+    cropDist = maskSizeUm * mutopx
 
     startx = max(xc - (cropDist // 2), 0)
     starty = max(yc - (cropDist // 2), 0)
@@ -91,7 +91,7 @@ def find_spheroid(imCropped:np.ndarray,
     wellDiameterUm:int, 
     mutopx:float, 
     marginDistance = 100, 
-    fraction = 2.8,
+    fraction = 3.5,
     minRegionArea = 10000, 
     maxRegionArea = 120000):
 
