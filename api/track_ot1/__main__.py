@@ -7,121 +7,124 @@ import pandas
 from api.track_ot1 import track_ot1
 from api import read
 
+
 @click.command()
-@click.argument('image_path', nargs=1)
-
+@click.argument("image_path", nargs=1)
 @click.option(
-    '--channel_fluo', '-cfl', 
-    type=int, 
-    default=0, 
-    show_default=True, 
-    help='Relevant channel for analysis'
-)
-
-@click.option(
-    '--channel_bf', '-cbf', 
-    type=int, 
-    default=1, 
-    show_default=True, 
-    help='BF channel'
-)
-
-@click.option(
-    '--out_dir', '-o',
-    default='.',
+    "--channel_fluo",
+    "-cfl",
+    type=int,
+    default=0,
     show_default=True,
-    help='Where to save the resulting csv files'
+    help="Relevant channel for analysis",
 )
 @click.option(
-    '--out_fname', '-fn',
-    default='ot1_frame',
+    "--channel_bf", "-cbf", type=int, default=1, show_default=True, help="BF channel"
+)
+@click.option(
+    "--out_dir",
+    "-o",
+    default=".",
     show_default=True,
-    help='Name of output csv file'
+    help="Where to save the resulting csv files",
 )
 @click.option(
-    '--mutopx', '-mu', 
-    type=int, 
-    default=3, 
-    show_default=True, 
-    help='Micrometers to pixels conversion rate'
+    "--out_fname",
+    "-fn",
+    default="ot1_frame",
+    show_default=True,
+    help="Name of output csv file",
 )
 @click.option(
-    '--search_range', '-r',
+    "--mutopx",
+    "-mu",
+    type=int,
+    default=3,
+    show_default=True,
+    help="Micrometers to pixels conversion rate",
+)
+@click.option(
+    "--search_range",
+    "-r",
     type=int,
     default=40,
     show_default=True,
-    help='Search range (px) for the tracking'
+    help="Search range (px) for the tracking",
 )
 @click.option(
-    '--minsize', '-ms',
+    "--minsize",
+    "-ms",
     type=int,
     default=10,
     show_default=True,
-    help='Minimum feature size for the tracking'
+    help="Minimum feature size for the tracking",
 )
 @click.option(
-    '--minmass', '-mm',
+    "--minmass",
+    "-mm",
     type=int,
     default=10000,
     show_default=True,
-    help='Minimum particle mass in tracking'
+    help="Minimum particle mass in tracking",
 )
 @click.option(
-    '--percentile', '-p',
+    "--percentile",
+    "-p",
     type=float,
     default=90.0,
     show_default=True,
-    help='Percentile below which local maxima will be ignored'
+    help="Percentile below which local maxima will be ignored",
 )
-
 @click.option(
-    '--state', '-s',
+    "--state",
+    "-s",
     type=bool,
     default=True,
     show_default=True,
-    help='Get position of OT-1 relative to the spheroid'
+    help="Get position of OT-1 relative to the spheroid",
 )
-
 @click.option(
-    '--verify_seg', '-vseg',
+    "--verify_seg",
+    "-vseg",
     type=bool,
     default=True,
     show_default=True,
-    help='Verify the segmentation results'
+    help="Verify the segmentation results",
 )
-
 @click.option(
-    '--radius', '-r',
+    "--radius",
+    "-r",
     type=int,
     default=10,
     show_default=True,
-    help='Error margin (in px) for the OT-1 state attribution.'
+    help="Error margin (in px) for the OT-1 state attribution.",
 )
-
 @click.option(
-    '--wellsizemu', '-ws',
+    "--wellsizemu",
+    "-ws",
     type=int,
     default=430,
     show_default=True,
-    help='Default well size in mu.'
+    help="Default well size in mu.",
 )
+def main(
+    image_path: str,
+    channel_fluo: int = 0,
+    channel_bf: int = 1,
+    out_dir: str = ".",
+    out_fname: str = "ot1_frame",
+    mutopx: int = 3,
+    search_range: int = 40,
+    minsize: int = 10,
+    minmass: int = 1000,
+    percentile: float = 90,
+    state: bool = True,
+    verify_seg: bool = True,
+    radius: int = 10,
+    wellsizemu: int = 430,
+):
 
-def main(image_path:str,
-    channel_fluo:int = 0,
-    channel_bf:int = 1, 
-    out_dir:str = '.',
-    out_fname:str = 'ot1_frame',
-    mutopx:int = 3,
-    search_range:int = 40,
-    minsize:int = 10,
-    minmass:int = 1000,
-    percentile:float = 90,
-    state:bool = True,
-    verify_seg:bool = True,
-    radius:int = 10,
-    wellsizemu:int = 430):
-
-    if '.nd2' in image_path:
+    if ".nd2" in image_path:
 
         vs = read.nd2(image_path)
 
@@ -131,35 +134,39 @@ def main(image_path:str,
 
     if not state:
 
-        data_frame = track_ot1.get_cell_tracks(vs,
-                            fluo_channel = channel_fluo,
-                            mutopx = mutopx,
-                            search_range = search_range,
-                            minsize = minsize,
-                            minmass = minmass,
-                            percentile = percentile)
+        data_frame = track_ot1.get_cell_tracks(
+            vs,
+            fluo_channel=channel_fluo,
+            mutopx=mutopx,
+            search_range=search_range,
+            minsize=minsize,
+            minmass=minmass,
+            percentile=percentile,
+        )
 
-        data_frame.to_csv(os.path.join(out_dir, out_fname + '.csv'))
+        data_frame.to_csv(os.path.join(out_dir, out_fname + ".csv"))
 
     else:
 
-        data_frame = track_ot1.get_cell_tracks_state(vs,
-                            fluo_channel = channel_fluo,
-                            fluo_BF = channel_bf,
-                            mutopx = mutopx,
-                            search_range = search_range,
-                            minsize = minsize,
-                            minmass = minmass,
-                            percentile = percentile,
-                            verify_seg = verify_seg,
-                            radius = radius,
-                            wellSizeMu = wellsizemu)
+        data_frame = track_ot1.get_cell_tracks_state(
+            vs,
+            fluo_channel=channel_fluo,
+            fluo_BF=channel_bf,
+            mutopx=mutopx,
+            search_range=search_range,
+            minsize=minsize,
+            minmass=minmass,
+            percentile=percentile,
+            verify_seg=verify_seg,
+            radius=radius,
+            wellSizeMu=wellsizemu,
+        )
 
-        data_frame.to_csv(os.path.join(out_dir, out_fname + '.csv'))
+        data_frame.to_csv(os.path.join(out_dir, out_fname + ".csv"))
 
     return True
+
 
 if __name__ == "__main__":
 
     main()
-

@@ -23,7 +23,7 @@ setup(
         "trackpy",
         "click",
         "pre-commit",
-        "matplotlib-scalebar"
+        "matplotlib-scalebar",
     ],
     python_requires=">=3.8",
     packages=find_packages(),
