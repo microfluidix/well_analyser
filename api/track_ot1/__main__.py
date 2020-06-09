@@ -131,7 +131,7 @@ def main(image_path:str,
 
     if not state:
 
-        data_frame = track_ot1.get_cell_tracks(
+        data_frame = track_ot1.track_ot1.get_cell_tracks(
             vs,
             fluo_channel=channel_fluo,
             mutopx=mutopx,
@@ -145,7 +145,7 @@ def main(image_path:str,
 
     else:
 
-        data_frame =track_ot1.get_cell_tracks_state(vs,
+        data_frame =trac_ot1.track_ot1.get_cell_tracks_state(vs,
                             fluo_channel = channel_fluo,
                             fluo_BF = channel_bf,
                             mutopx = mutopx,
