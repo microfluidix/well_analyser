@@ -54,9 +54,8 @@ def spheroid_properties(img_labeled, img_intensity=None):
 
         return pandas.DataFrame()
 
-def find_single_cells(img_fluo:np.ndarray,
-    diameter:int,
-    minmass:int):
+
+def find_single_cells(img_fluo: np.ndarray, diameter: int, minmass: int):
     """
 
     Trackpy locate module implementation.
@@ -66,4 +65,4 @@ def find_single_cells(img_fluo:np.ndarray,
 
     """
 
-    return trackpy.locate(img_fluo, diameter = diameter, minmass = minmass)
+    return trackpy.locate(img_fluo, diameter=diameter, minmass=minmass)

@@ -32,9 +32,10 @@ def test_analyse():
 
     assert_frame_equal(props, ground_truth_frame)
 
+
 def test_find_single_cells():
 
-    img = np.zeros((20,20))
+    img = np.zeros((20, 20))
     img[5:8, 10:13] = 10
     diameter = 7
     minmass = 1
@@ -42,10 +43,11 @@ def test_find_single_cells():
     props = analyse.find_single_cells(img, diameter, minmass)
     ground_truth_frame = pandas.DataFrame(
         [[6.0, 11.0, 40.07147, 1.254729, 0.174658, 5.958149, 90.0, 0.0]],
-        columns = ['y', 'x', 'mass', 'size',
-        'ecc', 'signal', 'raw_mass', 'ep'])
+        columns=["y", "x", "mass", "size", "ecc", "signal", "raw_mass", "ep"],
+    )
 
     assert_frame_equal(props, ground_truth_frame)
+
 
 def _test_analyse_functional():
 

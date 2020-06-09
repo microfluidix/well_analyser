@@ -12,9 +12,8 @@ from scipy.ndimage import gaussian_filter
 from skimage.measure import label
 from skimage.measure import regionprops
 
-def _make_circ_mask(maskSize:int,
-    wellSize:int,
-    mutopx:float):
+
+def _make_circ_mask(maskSize: int, wellSize: int, mutopx: float):
 
     """
 
@@ -25,23 +24,25 @@ def _make_circ_mask(maskSize:int,
 
     """
 
-    cropDist = maskSize*mutopx
+    cropDist = maskSize * mutopx
 
     X = np.arange(cropDist)
     Y = X
 
     X, Y = np.meshgrid(X, Y)
 
-    mask = ((np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) > (wellSize*mutopx)//2 - 10*mutopx) &
-            (np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) < (wellSize*mutopx)//2 + 10*mutopx))
+    mask = (
+        np.sqrt((X - cropDist // 2) ** 2 + (Y - cropDist // 2) ** 2)
+        > (wellSize * mutopx) // 2 - 10 * mutopx
+    ) & (
+        np.sqrt((X - cropDist // 2) ** 2 + (Y - cropDist // 2) ** 2)
+        < (wellSize * mutopx) // 2 + 10 * mutopx
+    )
 
     return mask.astype(np.int)
 
 
-def _get_center(imgToAnalyze:np.ndarray, 
-    maskSize:int, 
-    wellSize:int,
-    mutopx:float):
+def _get_center(imgToAnalyze: np.ndarray, maskSize: int, wellSize: int, mutopx: float):
 
     """
 
@@ -52,16 +53,14 @@ def _get_center(imgToAnalyze:np.ndarray,
 
     """
 
-    mask = _make_circ_mask(maskSize,wellSize,mutopx)
+    mask = _make_circ_mask(maskSize, wellSize, mutopx)
 
     conv = cv2.filter2D(imgToAnalyze, cv2.CV_32F, mask)
 
     return unravel_index(conv.argmin(), conv.shape)
 
 
-def _make_disk_mask(maskSize:int, 
-    diskSize:int, 
-    mutopx:float):
+def _make_disk_mask(maskSize: int, diskSize: int, mutopx: float):
 
     """
 
@@ -72,12 +71,15 @@ def _make_disk_mask(maskSize:int,
 
     """
 
-    cropDist = int(maskSize*mutopx)
+    cropDist = int(maskSize * mutopx)
 
     X = np.arange(cropDist)
     Y = X
     X, Y = np.meshgrid(X, Y)
 
-    mask = (np.sqrt((X-cropDist//2)**2 + (Y-cropDist//2)**2) < (diskSize*mutopx)//2)
+    mask = (
+        np.sqrt((X - cropDist // 2) ** 2 + (Y - cropDist // 2) ** 2)
+        < (diskSize * mutopx) // 2
+    )
 
     return mask.astype(np.int)

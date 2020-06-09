@@ -10,26 +10,34 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+
 def wrap(pre, post):
-	""" Wrapper """
-	def decorate(func):
-		""" Decorator """
-		def call(*args, **kwargs):
-			""" Actual wrapping """
-			pre(func)
-			result = func(*args, **kwargs)
-			post(func)
-			return result
-		return call
-	return decorate
+    """ Wrapper """
+
+    def decorate(func):
+        """ Decorator """
+
+        def call(*args, **kwargs):
+            """ Actual wrapping """
+            pre(func)
+            result = func(*args, **kwargs)
+            post(func)
+            return result
+
+        return call
+
+    return decorate
+
 
 def entering(func):
-	""" Pre function logging """
-	logger.debug("Entered %s", func.__name__)
+    """ Pre function logging """
+    logger.debug("Entered %s", func.__name__)
+
 
 def exiting(func):
-	""" Post function logging """
-	logger.debug("Exited  %s", func.__name__)
+    """ Post function logging """
+    logger.debug("Exited  %s", func.__name__)
+
 
 @wrap(entering, exiting)
 class ND2Reader(ReaderInterface):
@@ -161,9 +169,9 @@ class ND2Reader(ReaderInterface):
         assert all(
             [k in self.ranges] for k in kwargs
         ), f"Must provide all the coordiantes from {self.ranges}, got {kwargs}"
-        #assert all(
+        # assert all(
         #    [0 <= kwargs[k] < self.ranges[k] for k in kwargs]
-        #), f"{kwargs} is out of range. Max values: {self.ranges}"
+        # ), f"{kwargs} is out of range. Max values: {self.ranges}"
 
     def __getitem__(self, value):
         logger.debug(f"__getitem__({value})")

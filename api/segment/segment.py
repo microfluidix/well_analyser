@@ -13,11 +13,13 @@ from skimage.measure import label
 from skimage.measure import regionprops
 
 
-def select_well(imgToAnalyze:np.ndarray,
-    imgToCrop:np.ndarray,
-    maskSizeUm:int,
-    wellDiameterUm:int,
-    mutopx:float):
+def select_well(
+    imgToAnalyze: np.ndarray,
+    imgToCrop: np.ndarray,
+    maskSizeUm: int,
+    wellDiameterUm: int,
+    mutopx: float,
+):
 
     """
 
@@ -28,10 +30,7 @@ def select_well(imgToAnalyze:np.ndarray,
 
     """
 
-    boolMask = find_well(imgToAnalyze,
-        maskSizeUm,
-        wellDiameterUm,
-        mutopx)
+    boolMask = find_well(imgToAnalyze, maskSizeUm, wellDiameterUm, mutopx)
 
     return crop(imgToCrop, boolMask)
 
@@ -58,10 +57,10 @@ def crop(imgToCrop: np.ndarray, boolMask: np.ndarray):
         x_min : x_max + 1, y_min : y_max + 1
     ]
 
-def find_well(imgToAnalyze:np.ndarray,
-    maskSizeUm:int,
-    wellDiameterUm:int,
-    mutopx:float):
+
+def find_well(
+    imgToAnalyze: np.ndarray, maskSizeUm: int, wellDiameterUm: int, mutopx: float
+):
 
     """
 
@@ -87,13 +86,15 @@ def find_well(imgToAnalyze:np.ndarray,
     return boolArray
 
 
-def find_spheroid(imCropped:np.ndarray, 
-    wellDiameterUm:int, 
-    mutopx:float, 
-    marginDistance = 100, 
-    fraction = 3.5,
-    minRegionArea = 10000, 
-    maxRegionArea = 120000):
+def find_spheroid(
+    imCropped: np.ndarray,
+    wellDiameterUm: int,
+    mutopx: float,
+    marginDistance=100,
+    fraction=3.5,
+    minRegionArea=10000,
+    maxRegionArea=120000,
+):
 
     """
 
@@ -108,23 +109,25 @@ def find_spheroid(imCropped:np.ndarray,
 
     result1 = ndimage.sobel(imCropped, 1)
     result2 = ndimage.sobel(imCropped, 0)
-    
-    mask = utilities._make_disk_mask(wellDiameterUm, wellDiameterUm-marginDistance,
-        mutopx)
+
+    mask = utilities._make_disk_mask(
+        wellDiameterUm, wellDiameterUm - marginDistance, mutopx
+    )
 
     sobelMasked = np.multiply(mask, np.sqrt(result1 ** 2 + result2 ** 2))
     toThresh = gaussian_filter(sobelMasked, sigma=5)
-    
-    imThresh = toThresh > np.max(toThresh)/fraction
-    
-    cnts, _ = cv2.findContours(imThresh.astype('uint8'), 
-        cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-    temp = cv2.drawContours(imThresh.astype('uint8'), 
-        cnts, -1, (255,255,255), thickness=cv2.FILLED)
-    
-    
+
+    imThresh = toThresh > np.max(toThresh) / fraction
+
+    cnts, _ = cv2.findContours(
+        imThresh.astype("uint8"), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
+    temp = cv2.drawContours(
+        imThresh.astype("uint8"), cnts, -1, (255, 255, 255), thickness=cv2.FILLED
+    )
+
     imLabel = label(temp)
-    
+
     for region in regionprops(imLabel):
 
         if region.area < minRegionArea:
