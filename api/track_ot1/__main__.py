@@ -4,7 +4,7 @@ import click
 
 import pandas
 
-from api.track_ot1 import track_ot1
+from api import track_ot1
 from api import read
 
 @click.command()
@@ -131,13 +131,15 @@ def main(image_path:str,
 
     if not state:
 
-        data_frame = track_ot1.get_cell_tracks(vs,
-                            fluo_channel = channel_fluo,
-                            mutopx = mutopx,
-                            search_range = search_range,
-                            minsize = minsize,
-                            minmass = minmass,
-                            percentile = percentile)
+        data_frame = track_ot1.get_cell_tracks(
+            vs,
+            fluo_channel=channel_fluo,
+            mutopx=mutopx,
+            search_range=search_range,
+            minsize=minsize,
+            minmass=minmass,
+            percentile=percentile,
+        )
 
         data_frame.to_csv(os.path.join(out_dir, out_fname + '.csv'))
 
@@ -155,7 +157,7 @@ def main(image_path:str,
                             radius = radius,
                             wellSizeMu = wellsizemu)
 
-        data_frame.to_csv(os.path.join(out_dir, out_fname + '.csv'))
+        data_frame.to_csv(os.path.join(out_dir, out_fname + ".csv"))
 
     return True
 
