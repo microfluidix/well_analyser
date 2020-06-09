@@ -4,7 +4,7 @@ import click
 
 import pandas
 
-from api.track_ot1 import track_ot1
+from api import track_ot1
 from api import read
 
 @click.command()
@@ -131,7 +131,7 @@ def main(image_path:str,
 
     if not state:
 
-        data_frame = track_ot1.get_cell_tracks(vs,
+        data_frame = track_ot1.track_ot1.get_cell_tracks(vs,
                             fluo_channel = channel_fluo,
                             mutopx = mutopx,
                             search_range = search_range,
@@ -143,7 +143,7 @@ def main(image_path:str,
 
     else:
 
-        data_frame = track_ot1.get_cell_tracks_state(vs,
+        data_frame = track_ot1.track_ot1.get_cell_tracks_state(vs,
                             fluo_channel = channel_fluo,
                             fluo_BF = channel_bf,
                             mutopx = mutopx,
