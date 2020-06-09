@@ -91,10 +91,9 @@ def find_spheroid(
     wellDiameterUm: int,
     mutopx: float,
     marginDistance=100,
-    fraction=3.5,
-    minRegionArea=10000,
-    maxRegionArea=120000,
-):
+    fraction=5,
+    minRegionArea=1000,
+    maxRegionArea=120000):
 
     """
 
@@ -113,6 +112,9 @@ def find_spheroid(
     mask = utilities._make_disk_mask(
         wellDiameterUm, wellDiameterUm - marginDistance, mutopx
     )
+
+    nx, ny = np.shape(result1)
+    mask = mask[:nx,:ny]
 
     sobelMasked = np.multiply(mask, np.sqrt(result1 ** 2 + result2 ** 2))
     toThresh = gaussian_filter(sobelMasked, sigma=5)
