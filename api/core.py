@@ -38,6 +38,9 @@ class Well:
         arr = downscale_local_mean(self.array, tuple(factors))
         return Well(arr, meta={"binning": factor, **self.meta})
 
+    def show(self):
+        plt.imshow(self.array)
+
     def __repr__(self,):
         try:
             if self.array.ndim == 2:
