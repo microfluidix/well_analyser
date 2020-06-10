@@ -49,7 +49,7 @@ def get_cell_tracks(
     
     """
 
-    min_size = (2 * mutopx * minsize // 2) + 1
+    min_size = (2 * mutopx * minsize)//2 + 1
     track_frame = pandas.DataFrame()
 
     c2_time_reader = vs.read(t=None, m=None, c=fluo_channel)
@@ -133,8 +133,8 @@ def get_cell_tracks_state(
                 crop_img_fluo, min_size, minmass=minmass, percentile=percentile
             )
 
-            well_frame["x"] += min_size / 2
-            well_frame["y"] += min_size / 2
+            #well_frame["x"] += min_size / 2
+            #well_frame["y"] += min_size / 2
 
             well_frame = OT1_status.get_state(well_frame, radius, sph_img)
 

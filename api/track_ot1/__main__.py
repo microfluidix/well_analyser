@@ -28,7 +28,7 @@ from api import read
 
 @click.option(
     '--out_dir', '-o',
-    default='.',
+    default='',
     show_default=True,
     help='Where to save the resulting csv files'
 )
@@ -109,7 +109,7 @@ from api import read
 def main(image_path:str,
     channel_fluo:int = 0,
     channel_bf:int = 1, 
-    out_dir:str = '.',
+    out_dir:str = '',
     out_fname:str = 'ot1_frame',
     mutopx:int = 3,
     search_range:int = 40,
@@ -128,6 +128,10 @@ def main(image_path:str,
     else:
 
         vs = read.VirtualStack(image_path)
+
+    if out_dir == '':
+
+        out_dir = image_path
 
     if not state:
 
