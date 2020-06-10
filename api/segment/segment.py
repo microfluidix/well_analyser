@@ -91,7 +91,7 @@ def find_spheroid(
     wellDiameterUm: int,
     mutopx: float,
     marginDistance=100,
-    fraction=5,
+    fraction=3.5,
     minRegionArea=1000,
     maxRegionArea=120000):
 
