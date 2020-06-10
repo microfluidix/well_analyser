@@ -50,12 +50,11 @@ class VirtualStack(interface.ReaderInterface):
             else:
                 _range = None
             ranges.append(self._check_range(_range, ax))
-        # print(ranges)
 
         params = [{}]
         for ax, _range in zip(self.order[-1::-1], ranges[-1::-1]):
             params = [{**p, ax: r} for r in _range for p in params]
-        # print(params)
+
         for param in params:
             img = self.get_single_image(**param)
             if bin > 1:

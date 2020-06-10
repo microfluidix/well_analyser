@@ -133,8 +133,9 @@ def get_cell_tracks_state(
                 crop_img_fluo, min_size, minmass=minmass, percentile=percentile
             )
 
-            #well_frame["x"] += min_size / 2
-            #well_frame["y"] += min_size / 2
+            # center the marker wrt to cell position
+            well_frame["x"] += min_size / 2
+            well_frame["y"] += min_size / 2
 
             well_frame = OT1_status.get_state(well_frame, radius, sph_img)
 
