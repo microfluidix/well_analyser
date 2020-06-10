@@ -97,7 +97,7 @@ def get_cell_tracks_state(
     
     """
 
-    min_size = (2 * mutopx * minsize // 2) + 1
+    min_size = (2 * mutopx * minsize)//2 + 1
     track_frame = pandas.DataFrame()
 
     folder = vs.folder

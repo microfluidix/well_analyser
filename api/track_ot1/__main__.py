@@ -13,7 +13,7 @@ from api import read
 @click.option(
     '--channel_fluo', '-cfl', 
     type=int, 
-    default=0, 
+    default=2, 
     show_default=True, 
     help='Relevant channel for analysis'
 )
@@ -107,15 +107,15 @@ from api import read
 )
 
 def main(image_path:str,
-    channel_fluo:int = 0,
+    channel_fluo:int = 2,
     channel_bf:int = 1, 
     out_dir:str = '',
     out_fname:str = 'ot1_frame',
     mutopx:int = 3,
     search_range:int = 40,
-    minsize:int = 10,
+    minsize:int = 17,
     minmass:int = 1000,
-    percentile:float = 90,
+    percentile:float = 60,
     state:bool = True,
     verify_seg:bool = True,
     radius:int = 10,
