@@ -159,7 +159,7 @@ def main(image_path:str,
                             percentile = percentile,
                             verify_seg = verify_seg,
                             radius = radius,
-                            wellSizeMu = wellsizemu)
+                            wellsizemu = wellsizemu)
 
         data_frame.to_csv(os.path.join(out_dir, out_fname + ".csv"))
 

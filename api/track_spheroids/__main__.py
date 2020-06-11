@@ -4,8 +4,9 @@ import click
 
 import pandas
 
-import track_spheroids
+from api.track_ot1 import track_ot1
 import read
+from api.track_spheroids import track_spheroids
 
 
 @click.command()
@@ -65,7 +66,7 @@ import read
     help="Create verification images of segmentation",
 )
 @click.option(
-    "--wellSizeMu",
+    "--wellsizemu",
     "-ws",
     default=430,
     type=int,
@@ -73,18 +74,22 @@ import read
     help="Well size in micrometers",
 )
 def main(
-    image_path: str = "",
-    channel: int = 1,
-    out_dir: str = "",
-    out_fname: str = "",
-    mutopx: int = 3,
-    fluo_channel: int = 2,
-    get_fluo: bool = False,
-    verify_seg: bool = True,
-    wellSizeMu: int = 430,
+    image_path:str,
+    channel:int = 1,
+    out_dir:str = "",
+    out_fname:str = "spheroid_frame",
+    mutopx:int = 3,
+    fluo_channel:int = 2,
+    get_fluo:bool = False,
+    verify_seg:bool = True,
+    wellsizemu:int = 430,
 ):
 
     vs = read.VirtualStack(image_path)
+
+    if out_dir == '':
+
+        out_dir = image_path
 
     data_frame = track_spheroids.get_spheroid_properties(
         vs,
@@ -92,7 +97,7 @@ def main(
         fluo_channel=fluo_channel,
         get_fluo=get_fluo,
         verify_seg=verify_seg,
-        wellSizeMu=wellSizeMu,
+        wellSizeMu=wellsizemu,
         mutopx=mutopx,
     )
 

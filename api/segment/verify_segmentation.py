@@ -15,13 +15,44 @@ def verifySegmentationBF(
         os.makedirs(os.path.join(PATH, str(m)))
     savePath = os.path.join(PATH, str(m))
 
-    fname = f"verif_seg_m{int(m):02d}t{int(t):03d}.jpeg"
+    fname = f"{int(m):02d}t{int(t):03d}.jpeg"
 
     fig, _ = plt.subplots(1, 1, figsize=(10, 10))
 
     plt.imshow(BFimage, cmap="gray", origin="lower")
     plt.imshow(rRegion, alpha=0.1, origin="lower")
     plt.axis("off")
+    scalebar = ScaleBar(0.33, units="um")
+    plt.gca().add_artist(scalebar)
+    plt.savefig(os.path.join(savePath, fname))
+    plt.close(fig)
+
+    return
+
+def verify_OT1_segmentation(
+    Fluoimage: np.ndarray, 
+    well_frame: pandas.DataFrame,
+    PATH: str, 
+    m: int, 
+    t: int
+):
+
+    if not os.path.exists(os.path.join(PATH, str(m))):
+        os.makedirs(os.path.join(PATH, str(m)))
+    savePath = os.path.join(PATH, str(m))
+
+    fname = f"{int(m):02d}t{int(t):03d}.jpeg"
+
+    fig, _ = plt.subplots(1, 1, figsize=(10, 10))
+
+    plt.imshow(Fluoimage, cmap="gray", origin="lower")
+    plt.axis("off")
+
+    plt.scatter(
+        well_frame["x"],
+        well_frame["y"]
+    )
+
     scalebar = ScaleBar(0.33, units="um")
     plt.gca().add_artist(scalebar)
     plt.savefig(os.path.join(savePath, fname))
@@ -44,8 +75,6 @@ def verify_OT1_state(
     savePath = os.path.join(PATH, str(m))
 
     fname = f"verif_seg_m{int(m):02d}t{int(t):03d}.jpeg"
-
-    print(os.path.join(savePath, fname))
 
     colors = ["tab:blue", "tab:red"]
 

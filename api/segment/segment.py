@@ -30,7 +30,11 @@ def select_well(
 
     """
 
-    boolMask = find_well(imgToAnalyze, maskSizeUm, wellDiameterUm, mutopx)
+    boolMask = find_well(imgToAnalyze, 
+        maskSizeUm, 
+        wellDiameterUm, 
+        mutopx
+    )
 
     return crop(imgToCrop, boolMask)
 
@@ -91,8 +95,8 @@ def find_spheroid(
     wellDiameterUm: int,
     mutopx: float,
     marginDistance=100,
-    fraction=3.5,
-    minRegionArea=1000,
+    fraction=4,
+    minRegionArea=10000,
     maxRegionArea=120000):
 
     """

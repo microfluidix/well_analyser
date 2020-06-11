@@ -7,7 +7,10 @@ from api.analyse import analyse
 import pandas
 
 
-def get_state(well_frame: pandas.DataFrame, radius: int, spheroid_mask: np.ndarray):
+def get_state(well_frame: pandas.DataFrame, 
+    radius: int, 
+    spheroid_mask: np.ndarray
+):
 
     """
     

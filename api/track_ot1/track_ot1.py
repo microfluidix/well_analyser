@@ -50,6 +50,7 @@ def get_cell_tracks(
 
     min_size = (2 * mutopx * minsize)//2 + 1
     track_frame = pandas.DataFrame()
+    folder = vs.folder
 
     c2_time_reader = vs.read(t=None, m=None, c=fluo_channel)
 
@@ -69,6 +70,15 @@ def get_cell_tracks(
 
         track_frame = track_frame.append(well_frame)
 
+        if not os.path.exists(os.path.join(folder, "verify_segmentation_OT1")):
+            os.makedirs(os.path.join(folder, "verify_segmentation_OT1"))
+
+        folder = os.path.join(vs.folder, "verify_segmentation_OT1")
+
+        verify_segmentation.verify_OT1_segmentation(
+            img.array,  well_frame, folder, m, t
+        )
+
     return make_tracks(track_frame, search_range)
 
 
@@ -83,7 +93,7 @@ def get_cell_tracks_state(
     percentile: float,
     verify_seg: bool,
     radius: int,
-    wellSizeMu: int,
+    wellsizemu: int,
 ):
 
     """
@@ -98,82 +108,76 @@ def get_cell_tracks_state(
 
     min_size = (2 * mutopx * minsize)//2 + 1
     track_frame = pandas.DataFrame()
-
-    folder = vs.folder
-
+    folder = os.path.dirname(vs.folder)
     c2_time_reader = vs.read(t=None, m=None, c=fluo_channel)
 
     for img in tqdm(c2_time_reader):
 
-        t = img.meta["t"]
-        m = img.meta["m"]
+        try:
 
-        if True:
+            t = img.meta["t"]
+            m = img.meta["m"]
 
+            well_frame = pandas.DataFrame()
             img_BF = vs.get_single_image(m=m, t=t, c=fluo_BF)
 
             (xc, yc) = utilities._get_center(
-                img_BF.array, wellSizeMu, wellSizeMu, mutopx
+                img_BF.array, wellsizemu, wellsizemu, mutopx
             )
 
             crop_img_BF = segment.select_well(
-                img_BF.array, img_BF.array, wellSizeMu, wellSizeMu, mutopx
+                img_BF.array, img_BF.array, wellsizemu, wellsizemu, mutopx
             )
 
             crop_img_fluo = segment.select_well(
-                img_BF.array, img.array, wellSizeMu, wellSizeMu, mutopx
+                img_BF.array, img.array, wellsizemu, wellsizemu, mutopx
             )
 
-            sph_img = segment.find_spheroid(crop_img_BF, wellSizeMu, mutopx)
+            sph_img = segment.find_spheroid(crop_img_BF, wellsizemu, mutopx)
 
-            # the parameter values returned by vs.ranges is a str
-            # but the input of vs.read is an int.
-            well_frame = trackpy.locate(
-                crop_img_fluo, min_size, minmass=minmass, percentile=percentile
+            well_frame = trackpy.locate(img.array, 
+                min_size, 
+                minmass=minmass, 
+                percentile=percentile
             )
 
             # center the marker wrt to cell position
-            well_frame["x"] += min_size / 2
-            well_frame["y"] += min_size / 2
+            well_frame["x"] += min_size / 2 - yc + wellsizemu*mutopx/2
+            well_frame["y"] += min_size / 2 - xc + wellsizemu*mutopx/2
 
-            well_frame = OT1_status.get_state(well_frame, radius, sph_img)
+            new_well_frame = OT1_status.get_state(well_frame, radius, sph_img)
 
             if verify_seg:
 
-                if not os.path.exists(os.path.join(folder, "verify segmentation OT1")):
-                    os.makedirs(os.path.join(folder, "verify segmentation OT1"))
+                if not os.path.exists(os.path.join(folder, "verify_segmentation_OT1")):
+                    os.makedirs(os.path.join(folder, "verify_segmentation_OT1"))
 
-                folder = os.path.join(vs.folder, "verify segmentation OT1")
+                verify_OT1_folder = os.path.join(folder, "verify_segmentation_OT1")
 
                 verify_segmentation.verify_OT1_state(
-                    crop_img_BF, crop_img_fluo, well_frame, folder, m, t
+                    crop_img_BF, crop_img_fluo, well_frame, verify_OT1_folder, m, t
                 )
 
                 if not os.path.exists(
-                    os.path.join(folder, "Spheroid Region Detection")
+                    os.path.join(folder, "Spheroid_Region_Detection")
                 ):
-                    os.makedirs(os.path.join(folder, "Spheroid Region Detection"))
+                    os.makedirs(os.path.join(folder, "Spheroid_Region_Detection"))
 
-                folder = os.path.join(vs.folder, "Spheroid Region Detection")
+                verify_sph_folder = os.path.join(folder, "Spheroid_Region_Detection")
 
                 verify_segmentation.verifySegmentationBF(
-                    crop_img_BF, sph_img, folder, m, t
+                    crop_img_BF, sph_img, verify_sph_folder, m, t
                 )
 
-            well_frame["m"] = m
-            well_frame["frame"] = t
+            new_well_frame["m"] = m
+            new_well_frame["frame"] = t
 
-            well_frame["well_center_x"] = xc
-            well_frame["well_center_y"] = yc
+            new_well_frame["well_center_x"] = xc
+            new_well_frame["well_center_y"] = yc
 
-            track_frame = track_frame.append(well_frame)
+            track_frame = track_frame.append(new_well_frame)
 
-        # except Exception as e:
-
-        #    error[m][t] = e
-
-    # with open(os.path.join(folder, 'error_message.csv','wb')) as f:
-    #    w = csv.writer(f)
-    #    w.writerows(error.items())
+        except Exception as e:
+            print(e)
 
     return make_tracks(track_frame, search_range)
