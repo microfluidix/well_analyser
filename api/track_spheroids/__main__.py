@@ -4,8 +4,8 @@ import click
 
 import pandas
 
-from api.track_spheroids import track_spheroids
-from api import read
+import track_spheroids
+import read
 
 
 @click.command()

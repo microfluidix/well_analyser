@@ -16,7 +16,6 @@ from api.segment import utilities as utilities
 
 from api.track_ot1 import OT1_status
 
-
 def make_tracks(track_frame: pandas.DataFrame, search_range: int):
 
     result_frame = pandas.DataFrame()

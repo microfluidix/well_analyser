@@ -15,4 +15,5 @@ trackpy
 sklearn
 click
 pre-commit
+matplotlib
 matplotlib-scalebar
