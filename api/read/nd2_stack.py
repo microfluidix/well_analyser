@@ -114,6 +114,7 @@ class ND2Reader(ReaderInterface):
         self.ranges = self.reader.sizes
         self.channels = [met[f"plane_{i}"]["name"] for i in range(met["plane_count"])]
         self.pixel_size_um = met["calibration_um"]
+        self.coords = self.reader.default_coords
 
     def get_single_image(self, **kwargs) -> Well:
         """

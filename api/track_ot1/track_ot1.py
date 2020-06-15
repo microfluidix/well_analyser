@@ -52,6 +52,8 @@ def get_cell_tracks(
     track_frame = pandas.DataFrame()
     folder = vs.folder
 
+    print(vs.meta)
+
     c2_time_reader = vs.read(t=None, m=None, c=fluo_channel)
 
     for img in tqdm(c2_time_reader):
@@ -108,18 +110,22 @@ def get_cell_tracks_state(
 
     min_size = (2 * mutopx * minsize)//2 + 1
     track_frame = pandas.DataFrame()
-    folder = os.path.dirname(vs.folder)
+    #folder = os.path.dirname(vs.folder)
+    folder = vs.folder
     c2_time_reader = vs.read(t=None, m=None, c=fluo_channel)
 
     for img in tqdm(c2_time_reader):
 
-        try:
+        if True:
 
             t = img.meta["t"]
             m = img.meta["m"]
 
             well_frame = pandas.DataFrame()
             img_BF = vs.get_single_image(m=m, t=t, c=fluo_BF)
+
+            print(img.meta)
+            print(img_BF.meta)
 
             (xc, yc) = utilities._get_center(
                 img_BF.array, wellsizemu, wellsizemu, mutopx
@@ -177,7 +183,7 @@ def get_cell_tracks_state(
 
             track_frame = track_frame.append(new_well_frame)
 
-        except Exception as e:
-            print(e)
+        #except Exception as e:
+        #    print(e)
 
     return make_tracks(track_frame, search_range)

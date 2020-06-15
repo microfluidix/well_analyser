@@ -133,6 +133,8 @@ def main(image_path:str,
 
         out_dir = image_path
 
+    print(vs.ranges)
+
     if not state:
 
         data_frame = track_ot1.get_cell_tracks(

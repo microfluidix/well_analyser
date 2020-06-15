@@ -112,7 +112,7 @@ class VirtualStack(interface.ReaderInterface):
         return f"Virtial Stack instance. \nFound {len(self.flist)} files in {self.folder}. \nRanges: {self.ranges}"
 
 
-def get_indices(fname: str, regexp=r"([ctmz])(\d{1,2})") -> dict:
+def get_indices(fname: str, regexp=r"([tmc])(\d{1,2})") -> dict:
     """
     scans file name for regex and returns dict of values
     """

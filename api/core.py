@@ -1,6 +1,6 @@
 import logging
 
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 import numpy as np
 from skimage.transform import downscale_local_mean
 
