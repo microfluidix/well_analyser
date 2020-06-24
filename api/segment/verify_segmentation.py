@@ -81,6 +81,9 @@ def verify_OT1_state(
     fig, ax = plt.subplots(1, 2, figsize=(12, 6))
 
     ax[0].imshow(BFimage, cmap="gray", origin="lower")
+    ax[0].plot(well_frame["spheroid_center_x"].unique(),
+        well_frame["spheroid_center_y"].unique(),
+        'ro')
     ax[0].scatter(
         well_frame["x"],
         well_frame["y"],
