@@ -41,8 +41,6 @@ def get_spheroid_properties(
 
         try:
 
-            print(img.meta)
-
             t = img.meta["t"]
             m = img.meta["m"]
 
@@ -74,7 +72,7 @@ def get_spheroid_properties(
             timeFrame["well_center_y"] = yc
             timeFrame["mask_size"] = wellSizeMu * mutopx
 
-            folder = vs.folder
+            folder = os.path.dirname(vs.folder)
 
             if not os.path.exists(os.path.join(folder, "spheroid_data_frame")):
                 os.makedirs(os.path.join(folder, "spheroid_data_frame"))

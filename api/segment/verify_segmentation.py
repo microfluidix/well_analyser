@@ -85,16 +85,16 @@ def verify_OT1_state(
         well_frame["spheroid_center_y"].unique(),
         'ro')
     ax[0].scatter(
-        well_frame["x"],
-        well_frame["y"],
+        well_frame["x_corrected"],
+        well_frame["y_corrected"],
         c=well_frame["state"].apply(lambda x: colors[x]),
     )
     ax[0].axis("off")
 
     ax[1].imshow(Fluoimage, cmap="gray", origin="lower")
     ax[1].scatter(
-        well_frame["x"],
-        well_frame["y"],
+        well_frame["x_corrected"],
+        well_frame["y_corrected"],
         c=well_frame["state"].apply(lambda x: colors[x]),
     )
     ax[1].axis("off")

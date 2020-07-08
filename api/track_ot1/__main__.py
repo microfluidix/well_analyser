@@ -62,7 +62,7 @@ from api import read
 @click.option(
     '--minmass', '-mm',
     type=int,
-    default=10000,
+    default=5000,
     show_default=True,
     help='Minimum particle mass in tracking'
 )

@@ -94,8 +94,8 @@ def find_spheroid(
     imCropped: np.ndarray,
     wellDiameterUm: int,
     mutopx: float,
-    marginDistance=100,
-    fraction=4,
+    marginDistance=70,
+    fraction=4.5,
     minRegionArea=10000,
     maxRegionArea=120000):
 

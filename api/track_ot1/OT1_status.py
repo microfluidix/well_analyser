@@ -44,7 +44,7 @@ def get_state(well_frame: pandas.DataFrame,
 
     state = (well_frame["x"] - x) ** 2 + (well_frame["y"] - y) ** 2 < (radius + R) ** 2
 
-    well_frame["state_radius"] = state
+    well_frame["state"] = state
     well_frame["spheroid_center_x"] = x
     well_frame["spheroid_center_y"] = y
     well_frame["spheroid_radius"] = R
