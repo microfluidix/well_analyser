@@ -50,7 +50,7 @@ from api import read
     type=int,
     default=40,
     show_default=True,
-    help='Search range (px) for the tracking'
+    help='Search range (mu) for the tracking'
 )
 @click.option(
     '--minsize', '-ms',
@@ -112,7 +112,7 @@ def main(image_path:str,
     out_dir:str = '',
     out_fname:str = 'ot1_frame',
     mutopx:int = 3,
-    search_range:int = 40,
+    search_range:int = 20,
     minsize:int = 17,
     minmass:int = 1000,
     percentile:float = 60,

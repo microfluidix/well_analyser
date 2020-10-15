@@ -16,14 +16,16 @@ from api.segment import utilities as utilities
 
 from api.track_ot1 import OT1_status
 
-def make_tracks(track_frame: pandas.DataFrame, search_range: int):
+def make_tracks(track_frame: pandas.DataFrame, 
+                search_range: int, 
+                mutopx: int):
 
     result_frame = pandas.DataFrame()
 
     for m in track_frame["m"].unique():
 
         result_frame = result_frame.append(
-            trackpy.link(track_frame[track_frame["m"] == m], search_range=search_range)
+            trackpy.link(track_frame[track_frame["m"] == m], search_range=search_range*mutopx)
         )
 
     return result_frame
@@ -81,7 +83,7 @@ def get_cell_tracks(
             img.array,  well_frame, folder, m, t
         )
 
-    return make_tracks(track_frame, search_range)
+    return make_tracks(track_frame, search_range, mutopx)
 
 
 def get_cell_tracks_state(
@@ -219,4 +221,4 @@ def get_cell_tracks_state(
                 track_frame = track_frame.append(well_frame)
 
 
-    return make_tracks(track_frame, search_range)
+    return make_tracks(track_frame, search_range, mutopx)
