@@ -94,9 +94,9 @@ def find_spheroid(
     imCropped: np.ndarray,
     wellDiameterUm: int,
     mutopx: float,
-    marginDistance=70,
-    fraction=4.5,
-    minRegionArea=10000,
+    marginDistance=110,
+    fraction=2.9,
+    minRegionArea=1000,
     maxRegionArea=120000):
 
     """
@@ -148,10 +148,10 @@ def find_spheroid(
             temp[imLabel == region.label] = 0
             # region given same value as sph. border
 
-        if region.eccentricity > 0.7:
+        if region.eccentricity > 0.75:
             # check it is inside or outside
 
             temp[imLabel == region.label] = 0
             # region given same value as sph. border
 
-    return temp
+    return temp, sobelMasked, imThresh

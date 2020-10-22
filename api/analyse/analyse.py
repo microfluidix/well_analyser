@@ -48,7 +48,7 @@ def spheroid_properties(img_labeled, img_intensity=None):
 
     if len(np.unique(im_label)) > 1:
 
-        return pandas.DataFrame(regionprops_table(im_label, img_intensity, properties))
+        return pandas.DataFrame(regionprops_table(im_label, img_intensity, properties)).sort_values("area")
 
     else:
 

@@ -54,8 +54,6 @@ def get_cell_tracks(
     track_frame = pandas.DataFrame()
     folder = vs.folder
 
-    print(vs.meta)
-
     c2_time_reader = vs.read(t=None, m=None, c=fluo_channel)
 
     for img in tqdm(c2_time_reader):
@@ -98,6 +96,8 @@ def get_cell_tracks_state(
     verify_seg: bool,
     radius: int,
     wellsizemu: int,
+    out_dir,
+    out_fname
 ):
 
     """
@@ -126,99 +126,73 @@ def get_cell_tracks_state(
         well_frame = pandas.DataFrame()
         img_BF = vs.get_single_image(m=m, t=t, c=fluo_BF)
 
-        if True:
 
-            if True:
-
-                (xc, yc) = utilities._get_center(
+        (xc, yc) = utilities._get_center(
                         img_BF.array, wellsizemu, wellsizemu, mutopx
-                )
+        )
 
-                crop_img_BF = segment.select_well(
+        crop_img_BF = segment.select_well(
                     img_BF.array, img_BF.array, wellsizemu, wellsizemu, mutopx
-                )
+        )
 
-                crop_img_fluo = segment.select_well(
+        crop_img_fluo = segment.select_well(
                     img_BF.array, img.array, wellsizemu, wellsizemu, mutopx
-                )
+        )
 
-                sph_img = segment.find_spheroid(crop_img_BF, wellsizemu, mutopx)
+        sph_img, sobelMasked, imThresh = segment.find_spheroid(crop_img_BF, wellsizemu, mutopx)
 
-                well_frame = trackpy.locate(crop_img_fluo, 
-                    min_size, 
-                    minmass=minmass, 
-                    percentile=percentile
-                )
+        well_frame = trackpy.locate(crop_img_fluo.astype(float), 
+                    minsize, 
+                    minmass, 
+                    percentile
+        )
 
-                # center the marker wrt to cell position
-                well_frame["x_corrected"] = well_frame["x"] + min_size / 2
-                well_frame["y_corrected"] = well_frame["y"] +  min_size / 2
+        well_frame = OT1_status.get_state(well_frame, radius, sph_img)
 
-                new_well_frame = OT1_status.get_state(well_frame, radius, sph_img)
+        if verify_seg:
 
-                if verify_seg:
-
-                    if not os.path.exists(os.path.join(folder, "verify_segmentation_OT1")):
+            if not os.path.exists(os.path.join(folder, "verify_segmentation_OT1")):
                         os.makedirs(os.path.join(folder, "verify_segmentation_OT1"))
 
-                    verify_OT1_folder = os.path.join(folder, "verify_segmentation_OT1")
+            verify_OT1_folder = os.path.join(folder, "verify_segmentation_OT1")
 
-                    verify_segmentation.verify_OT1_state(
-                        crop_img_BF, crop_img_fluo, new_well_frame, verify_OT1_folder, m, t
-                    )
+            verify_segmentation.verify_OT1_state(
+                        crop_img_BF, crop_img_fluo, well_frame, verify_OT1_folder, m, t
+            )
 
-                    if not os.path.exists(
-                        os.path.join(folder, "Spheroid_Region_Detection")
-                    ):
-                        os.makedirs(os.path.join(folder, "Spheroid_Region_Detection"))
+            if not os.path.exists(
+                os.path.join(folder, "Spheroid_Region_Detection")
+            ):
+                os.makedirs(os.path.join(folder, "Spheroid_Region_Detection"))
 
-                    verify_sph_folder = os.path.join(folder, "Spheroid_Region_Detection")
+            verify_sph_folder = os.path.join(folder, "Spheroid_Region_Detection")
 
-                    verify_segmentation.verifySegmentationBF(
-                        crop_img_BF, sph_img, verify_sph_folder, m, t
-                    )
+            verify_segmentation.verifySegmentationBF(
+                crop_img_BF, sph_img, sobelMasked, imThresh, verify_sph_folder, m, t
+            )
 
-                new_well_frame["m"] = m
-                new_well_frame["frame"] = t
+            well_frame["m"] = m
+            well_frame["frame"] = t
 
-                new_well_frame["well_center_x"] = xc
-                new_well_frame["well_center_y"] = yc
-                new_well_frame["BF_status"] = True
+            well_frame["well_center_x"] = xc
+            well_frame["well_center_y"] = yc
+            well_frame["BF_status"] = True
 
-                track_frame = track_frame.append(new_well_frame)
+            track_frame = track_frame.append(well_frame)
 
-            else:
+            track_frame.to_csv(os.path.join(out_dir, out_fname + ".csv"))
 
-                well_frame = trackpy.locate(img.array, 
-                    min_size, 
-                    minmass=minmass, 
-                    percentile=percentile
-                )
+        else:
 
-                well_frame["x_corrected"] = well_frame["x"] + min_size / 2
-                well_frame["y_corrected"] = well_frame["y"] +  min_size / 2
-                well_frame["well_center_x"] = 0
-                well_frame["well_center_y"] = 0
-                well_frame["spheroid_center_x"] = 0
-                well_frame["spheroid_center_y"] = 0
-                well_frame["state"] = 0
+            well_frame["well_center_x"] = 0
+            well_frame["well_center_y"] = 0
+            well_frame["spheroid_center_x"] = 0
+            well_frame["spheroid_center_y"] = 0
+            well_frame["state"] = 0
+            well_frame["m"] = m
+            well_frame["frame"] = t
+            well_frame["BF_status"] = False
 
-                if verify_seg:
-
-                    if not os.path.exists(os.path.join(folder, "verify_segmentation_OT1")):
-                        os.makedirs(os.path.join(folder, "verify_segmentation_OT1"))
-
-                    verify_OT1_folder = os.path.join(folder, "verify_segmentation_OT1")
-
-                    verify_segmentation.verify_OT1_state(
-                        img_BF.array, img.array, well_frame, verify_OT1_folder, m, t
-                    )
-
-                well_frame["m"] = m
-                well_frame["frame"] = t
-                well_frame["BF_status"] = False
-
-                track_frame = track_frame.append(well_frame)
-
+            track_frame = track_frame.append(well_frame)
 
     return make_tracks(track_frame, search_range, mutopx)

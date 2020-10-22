@@ -48,21 +48,21 @@ from api import read
 @click.option(
     '--search_range', '-r',
     type=int,
-    default=40,
+    default=20,
     show_default=True,
     help='Search range (mu) for the tracking'
 )
 @click.option(
     '--minsize', '-ms',
     type=int,
-    default=10,
+    default=41,
     show_default=True,
     help='Minimum feature size for the tracking'
 )
 @click.option(
     '--minmass', '-mm',
     type=int,
-    default=5000,
+    default=15000,
     show_default=True,
     help='Minimum particle mass in tracking'
 )
@@ -113,9 +113,9 @@ def main(image_path:str,
     out_fname:str = 'ot1_frame',
     mutopx:int = 3,
     search_range:int = 20,
-    minsize:int = 17,
-    minmass:int = 1000,
-    percentile:float = 60,
+    minsize:int = 41,
+    minmass:int = 15000,
+    percentile:float = 90,
     state:bool = True,
     verify_seg:bool = True,
     radius:int = 10,
@@ -161,7 +161,9 @@ def main(image_path:str,
                             percentile = percentile,
                             verify_seg = verify_seg,
                             radius = radius,
-                            wellsizemu = wellsizemu)
+                            wellsizemu = wellsizemu,
+                            out_dir = out_dir,
+                            out_fname = out_fname)
 
         data_frame.to_csv(os.path.join(out_dir, out_fname + ".csv"))
 

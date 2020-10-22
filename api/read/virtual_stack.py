@@ -45,6 +45,9 @@ class VirtualStack(interface.ReaderInterface):
         """
         ranges = []
         for ax in self.order:
+
+            print(ax)
+            
             if ax in kwargs:
                 _range = kwargs[ax]
             else:
@@ -72,6 +75,9 @@ class VirtualStack(interface.ReaderInterface):
         if not os.path.exists(path):
             raise ValueError(f"File not found for coordinates {args}")
         fname = os.path.basename(path)
+
+        print(fname)
+
         return Well(imread(path), meta={**args, "path": fname, "prefix": self.folder})
 
     def _check_range(self, values: tuple, axis: str):

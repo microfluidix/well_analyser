@@ -36,11 +36,11 @@ def get_state(well_frame: pandas.DataFrame,
 
         return well_frame
 
-    spheroid_positions = spheroid_positions.sort_values("area")
+    idxmax = spheroid_positions['area'].idxmax()
 
-    x = spheroid_positions["centroid-1"].iloc[0]
-    y = spheroid_positions["centroid-0"].iloc[0]
-    R = np.sqrt(spheroid_positions["area"] / np.pi).iloc[0]
+    x = spheroid_positions.loc[idxmax, "centroid-1"]
+    y = spheroid_positions.loc[idxmax, "centroid-0"]
+    R = np.sqrt(spheroid_positions.loc[idxmax, "area"] / np.pi)
 
     state = (well_frame["x"] - x) ** 2 + (well_frame["y"] - y) ** 2 < (radius + R) ** 2
 
