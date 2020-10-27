@@ -167,8 +167,10 @@ def get_cell_tracks_state(
 
             verify_sph_folder = os.path.join(folder, "Spheroid_Region_Detection")
 
+            label = well_frame['label'].values[0]
+
             verify_segmentation.verifySegmentationBF(
-                crop_img_BF, sph_img, sobelMasked, imThresh, verify_sph_folder, m, t
+                crop_img_BF, sph_img, sobelMasked, imThresh, verify_sph_folder, m, t, label,
             )
 
             well_frame["m"] = m

@@ -13,7 +13,7 @@ def verifySegmentationBF(
     rRegion: np.ndarray, 
     sobelMasked: np.ndarray,
     imThresh: np.ndarray,
-    PATH: str, m: int, t: int
+    PATH: str, m: int, t: int, label:int
 ):
 
     if not os.path.exists(os.path.join(PATH, str(m))):
@@ -36,7 +36,7 @@ def verifySegmentationBF(
     ax[2].axis("off")
 
     ax[3].imshow(BFimage, cmap="gray", origin="lower")
-    ax[3].imshow(rRegion, alpha = 0.3, origin="lower")
+    ax[3].imshow(rRegion == label, alpha = 0.3, origin="lower")
     ax[3].axis("off")
     
     scalebar = ScaleBar(0.33, units="um")

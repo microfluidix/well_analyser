@@ -96,7 +96,7 @@ def find_spheroid(
     mutopx: float,
     marginDistance=110,
     fraction=2.9,
-    minRegionArea=1000,
+    minRegionArea=3000,
     maxRegionArea=120000):
 
     """
