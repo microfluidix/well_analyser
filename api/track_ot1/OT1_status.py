@@ -33,6 +33,7 @@ def get_state(well_frame: pandas.DataFrame,
         well_frame["spheroid_center_x"] = 0
         well_frame["spheroid_center_y"] = 0
         well_frame["spheroid_radius"] = 0
+        well_frame["region_label"] = 0
 
         return well_frame
 

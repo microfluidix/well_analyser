@@ -95,8 +95,8 @@ def find_spheroid(
     wellDiameterUm: int,
     mutopx: float,
     marginDistance=110,
-    fraction=2.9,
-    minRegionArea=3000,
+    fraction=3.2,
+    minRegionArea=1000,
     maxRegionArea=120000):
 
     """
@@ -139,19 +139,19 @@ def find_spheroid(
         if region.area < minRegionArea:
             # check it is inside or outside
 
-            temp[imLabel == region.label] = 0
+            imLabel[imLabel == region.label] = 0
             # region given same value as sph. border
 
         if region.area > maxRegionArea:
             # check it is inside or outside
 
-            temp[imLabel == region.label] = 0
+            imLabel[imLabel == region.label] = 0
             # region given same value as sph. border
 
         if region.eccentricity > 0.75:
             # check it is inside or outside
 
-            temp[imLabel == region.label] = 0
+            imLabel[imLabel == region.label] = 0
             # region given same value as sph. border
 
-    return temp, sobelMasked, imThresh
+    return imLabel, sobelMasked, imThresh

@@ -147,6 +147,10 @@ def get_cell_tracks_state(
                     percentile
         )
 
+        # rm out of focus cells
+        #if len(well_frame) > 0:
+        #    well_frame = well_frame[well_frame['ep'] < 0.015]
+
         well_frame = OT1_status.get_state(well_frame, radius, sph_img)
 
         if verify_seg:
@@ -167,7 +171,7 @@ def get_cell_tracks_state(
 
             verify_sph_folder = os.path.join(folder, "Spheroid_Region_Detection")
 
-            label = well_frame['label'].values[0]
+            label = well_frame['region_label'].max()
 
             verify_segmentation.verifySegmentationBF(
                 crop_img_BF, sph_img, sobelMasked, imThresh, verify_sph_folder, m, t, label,

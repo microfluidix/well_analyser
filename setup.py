@@ -6,8 +6,8 @@ setup(
     name="image_analysis_toolbox",
     version="0.0.1-dev",
     description="Core python functions shared between the projects in the lab",
-    author=["Andrey Aristov", "Gustave Ronteix"],
-    author_email="aaristov@pasteur.fr",
+    author=["Gustave Ronteix"],
+    author_email="gustave.ronteix@pasteur.fr",
     url="https://gitlab.pasteur.fr/pub/image-analysis",
     install_requires=[
         "numpy",

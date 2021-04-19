@@ -22,22 +22,19 @@ def verifySegmentationBF(
 
     fname = f"{int(m):02d}t{int(t):03d}.jpeg"
 
-    fig, ax = plt.subplots(1, 4, figsize=(10, 10))
+    fig, ax = plt.subplots(1, 3, figsize=(10, 10))
 
     plt.imshow(BFimage, cmap="gray", origin="lower")
 
     ax[0].imshow(BFimage, cmap="gray", origin="lower")
     ax[0].axis("off")
 
-    ax[1].imshow(sobelMasked, cmap="viridis", origin="lower")
+    ax[1].imshow(imThresh, cmap="viridis", origin="lower")
     ax[1].axis("off")
 
-    ax[2].imshow(imThresh, cmap="viridis", origin="lower")
+    ax[2].imshow(BFimage, cmap="gray", origin="lower")
+    ax[2].imshow(rRegion, alpha = 0.3, origin="lower")
     ax[2].axis("off")
-
-    ax[3].imshow(BFimage, cmap="gray", origin="lower")
-    ax[3].imshow(rRegion == label, alpha = 0.3, origin="lower")
-    ax[3].axis("off")
     
     scalebar = ScaleBar(0.33, units="um")
     plt.gca().add_artist(scalebar)
@@ -100,7 +97,7 @@ def verify_OT1_state(
     ax[0].imshow(BFimage, cmap="gray", origin="lower")
     ax[0].plot(well_frame["spheroid_center_x"].unique(),
         well_frame["spheroid_center_y"].unique(),
-        'ro')
+        'go')
     ax[0].scatter(
         well_frame["x"],
         well_frame["y"],
