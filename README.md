@@ -18,7 +18,6 @@ Install the package in development mode:
 ```
 git clone git@gitlab.pasteur.fr:pub/image-analysis.git
 cd image-analysis
-<<<<<<< HEAD
 pip install .
 ```
 
@@ -31,7 +30,6 @@ The well images are extracted from their native `ND2` format to tiff files using
 The image analysis code is designed to be called from the command line in the terminal. To see all the analysis options available type:
 
 ```
-
 python -m api.track_ot1 --help
 
 ```
@@ -40,7 +38,6 @@ Starting from the example images and using the default parameters, one types:
 
 
 ```
-
 python -m api.track_ot1 PATH_TO_EXAMPLE_FOLDER
 
 ```
