@@ -27,7 +27,7 @@ pip install .
 
 The well images are extracted from their native `ND2` format to tiff files using Nikon proprietary software. All the images are now in a single folder and indexed according to their position number, time frame and channel. See the format in the `example_image` folder.
 
-The image analysis code is designed to be called from the command line in the terminal. To see all the analysis options available type:
+The image analysis code is designed to be called from the command line in the terminal. To see the possible command options call:
 
 ```
 python -m api.track_ot1 --help
