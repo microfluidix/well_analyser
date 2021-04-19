@@ -44,6 +44,8 @@ python -m api.track_ot1 PATH_TO_EXAMPLE_FOLDER
 
 This should generate two new folders containing the segmentation results and the T-cell detection results, allowing the user to fine-tune the parameters for optimal detection results. This also generates a single CSV file that will be the basis for the future analysis.
 
+In
+
 ### From a Jupyter Notebook
 
 
