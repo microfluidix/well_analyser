@@ -44,7 +44,10 @@ python -m api.track_ot1 PATH_TO_EXAMPLE_FOLDER
 
 This should generate two new folders containing the segmentation results and the T-cell detection results, allowing the user to fine-tune the parameters for optimal detection results. This also generates a single CSV file that will be the basis for the future analysis.
 
-In
+The expected results from the segmentation are given in the folder `expected_segmentation_output`. It contains three items:
+ - A folder named `Spheroid_Region_Detection` containing another folder named `12` (for the well position index, a new folder is generated for each well), itself containg the segmentation results for the greyscale image showed to the left.
+- A folder named `verify_segmentation_OT1`, also containing another folder named `12`, itself containg the CTL detection results. The center of the spheroid is shown by the green dot, the CTL positions are given by the blue and red dots. The red color is used for cells detected as being on the spheroid whereas the blue dots are the CTLs detected in the gel.
+- A CSV file named `ot1_frame.csv` recording all the CTL positions over time and relative to the spheroid.
 
 ### From a Jupyter Notebook
 
