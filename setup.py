@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
 
 setup(
     name="image_analysis_toolbox",
     version="0.0.1-dev",
     description="Core python functions shared between the projects in the lab",
-    author=["Andrey Aristov", "Gustave Ronteix"],
-    author_email="aaristov@pasteur.fr",
+    author=["Gustave Ronteix"],
+    author_email="gustave.ronteix@pasteur.fr",
     url="https://gitlab.pasteur.fr/pub/image-analysis",
     install_requires=[
         "numpy",
@@ -20,8 +20,11 @@ setup(
         "tifffile",
         "tqdm",
         "pandas",
-        "seaborn",
-        "trackpy"
+        "trackpy",
+        "click",
+        "pre-commit",
+        'matplotlib',
+        "matplotlib-scalebar"
     ],
     python_requires=">=3.8",
     packages=find_packages(),
