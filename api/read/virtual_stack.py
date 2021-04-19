@@ -73,7 +73,7 @@ class VirtualStack(interface.ReaderInterface):
             raise ValueError(f"Can't find data for coordinates {args}")
         path = self.flist[index]
         if not os.path.exists(path):
-            raise ValueError(f"File not found for coordinates {args}")
+            raise ValueError(f'File `{path}` not found for coordinates {args}')
         fname = os.path.basename(path)
 
         print(fname)
