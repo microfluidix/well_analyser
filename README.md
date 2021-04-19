@@ -1,6 +1,6 @@
 # Image analysis toolbox
 
-The current image analysis code serves to analyse the chip microscopy images. Each image is composed of a single spheroid-containing well and can be multi-channeled.
+The current image analysis code serves to analyse the chip microscopy images for the project presented in the pre-print titled [A Multiscale Immuno-Oncology on-Chip System (MIOCS) establishes that collective T cell behaviors govern tumor regression](https://www.biorxiv.org/content/10.1101/2021.03.23.435334v1). Each image is composed of a single spheroid-containing well and can be multi-channeled.
 
 ## Installation
 
