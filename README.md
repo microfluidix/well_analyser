@@ -18,6 +18,7 @@ Install the package in development mode:
 ```
 git clone git@gitlab.pasteur.fr:pub/image-analysis.git
 cd image-analysis
+<<<<<<< HEAD
 pip install .
 ```
 
